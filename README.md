@@ -66,6 +66,7 @@ After building successfully, run a Python shell using `python3`. Load `opendbpy 
 ```
 cd ./build/src/swig/python
 
+import opendbpy as odb
 db = odb.dbDatabase.create()
 odb.read_lef(db, "tech.vhv.tlef")
 odb.read_lef(db, "stdcell.lef")
