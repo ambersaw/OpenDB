@@ -64,10 +64,12 @@ The full set of the tcl commands exposed can be found under `./build/src/swig/tc
 After building successfully, run a Python shell using `python3`. Load `opendbpy module using:
 
 ```
-import importlib.util
-spec = importlib.util.spec_from_file_location("opendbpy", "./build/src/swig/python/opendbpy.py")
-odb = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(odb)
+cd ./build/src/swig/python
+
+db = odb.dbDatabase.create()
+odb.read_lef(db, "tech.vhv.tlef")
+odb.read_lef(db, "stdcell.lef")
+odb.read_def(db, "top.def")
 
 # use it as following
 odb.[class_name]
