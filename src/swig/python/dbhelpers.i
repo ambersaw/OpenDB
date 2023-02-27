@@ -25,6 +25,7 @@ read_def(odb::dbDatabase* db, std::string path)
     libs.push_back(lib);
   }
   defin defParser(db);
+  defParser.continueOnErrors();
   return defParser.createChip(libs, path.c_str());
 }
 
