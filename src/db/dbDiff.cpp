@@ -283,7 +283,16 @@ dbDiff& dbDiff::operator<<(const Point& p)
   _has_differences = true;
   return *this;
 }
+dbDiff& dbDiff::operator<<(const Poly& p)
+{
+  if (_f)
+    for (auto it : p.getPoints()) {
+      fprintf(_f, "( %d %d )", it.x(), it.y());
+    }
 
+  _has_differences = true;
+  return *this;
+}
 dbDiff& dbDiff::operator<<(const Rect& r)
 {
   if (_f)
@@ -434,6 +443,17 @@ void dbDiff::diff(const char* field, long double lhs, long double rhs)
 }
 
 void dbDiff::diff(const char* field, Point lhs, Point rhs)
+{
+  if (lhs != rhs) {
+    report("< %s: ", field);
+    (*this) << lhs;
+    (*this) << "\n";
+    report("> %s: ", field);
+    (*this) << rhs;
+    (*this) << "\n";
+  }
+}
+void dbDiff::diff(const char* field, Poly lhs, Poly rhs)
 {
   if (lhs != rhs) {
     report("< %s: ", field);
@@ -793,6 +813,12 @@ void dbDiff::out(char side, const char* field, long double value)
 }
 
 void dbDiff::out(char side, const char* field, Point value)
+{
+  report("%c %s: ", side, field);
+  (*this) << (value);
+  (*this) << "\n";
+}
+void dbDiff::out(char side, const char* field, Poly value)
 {
   report("%c %s: ", side, field);
   (*this) << (value);

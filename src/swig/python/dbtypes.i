@@ -1,5 +1,5 @@
 %template(vector_str) std::vector<std::string>;
-
+%template(Vector_point) std::vector<odb::Point>;
 
 // DB specital types
 %typemap(out) odb::dbStringProperty {
@@ -100,6 +100,7 @@
 %apply int &OUTPUT { int & x, int & y };
 %apply int &OUTPUT { int & x_spacing, int & y_spacing };
 WRAP_OBJECT_RETURN_REF(odb::Rect, r)
+WRAP_OBJECT_RETURN_REF(odb::Poly, r)
 WRAP_OBJECT_RETURN_REF(odb::Rect, rect)
 WRAP_OBJECT_RETURN_REF(odb::Rect, bbox)
 

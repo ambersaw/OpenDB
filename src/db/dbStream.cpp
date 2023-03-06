@@ -35,6 +35,27 @@
 #include "db.h"
 
 namespace odb {
+dbOStream& operator<<(dbOStream& stream, const Poly& r)
+{
+  for (auto it : r.getPoints()) {
+    stream << it.x();
+    stream << it.y();
+  }
+  return stream;
+}
+
+dbIStream& operator>>(dbIStream& stream, Poly& r)
+{
+  Point temp;
+  int point_num;
+  stream >> point_num;
+  
+  for (int i = 0; i != point_num; ++i) {
+    stream >> temp;
+    r.addPoint(temp);
+  }
+  return stream;
+}
 
 dbOStream& operator<<(dbOStream& stream, const Rect& r)
 {

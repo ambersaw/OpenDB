@@ -38,7 +38,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <algorithm>
 typedef unsigned int  uint;
 typedef unsigned char uchar;
 

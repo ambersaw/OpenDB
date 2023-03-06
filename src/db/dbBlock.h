@@ -163,6 +163,7 @@ class _dbBlock : public _dbObject
   char*                      _corner_name_list;
   char*                      _name;
   Rect                       _die_area;
+  Poly                       _die_boundary;
   dbId<_dbChip>              _chip;
   dbId<_dbBox>               _bbox;
   dbId<_dbBlock>             _parent;

@@ -406,6 +406,7 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
       _corner_name_list(block._corner_name_list),
       _name(NULL),
       _die_area(block._die_area),
+      _die_boundary(block._die_boundary),
       _chip(block._chip),
       _bbox(block._bbox),
       _parent(block._parent),
@@ -1104,6 +1105,9 @@ bool _dbBlock::operator==(const _dbBlock& rhs) const
   if (_die_area != rhs._die_area)
     return false;
 
+  if (_die_boundary != rhs._die_boundary)
+    return false;
+
   if (_chip != rhs._chip)
     return false;
 
@@ -1282,6 +1286,7 @@ void _dbBlock::differences(dbDiff&         diff,
   DIFF_FIELD(_name);
   DIFF_FIELD(_corner_name_list);
   DIFF_FIELD(_die_area);
+  DIFF_FIELD(_die_boundary);
   DIFF_FIELD(_chip);
   DIFF_FIELD(_bbox);
   DIFF_FIELD(_parent);
@@ -1363,6 +1368,7 @@ void _dbBlock::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_FIELD(_name);
   DIFF_OUT_FIELD(_corner_name_list);
   DIFF_OUT_FIELD(_die_area);
+  DIFF_OUT_FIELD(_die_boundary);
   DIFF_OUT_FIELD(_chip);
   DIFF_OUT_FIELD(_bbox);
   DIFF_OUT_FIELD(_parent);
@@ -1917,6 +1923,17 @@ void dbBlock::getMasters(std::vector<dbMaster*>& masters)
     dbInstHdr* hdr = *itr;
     masters.push_back(hdr->getMaster());
   }
+}
+void dbBlock::setDieBoundary(const Poly& r)
+{
+  _dbBlock* block  = (_dbBlock*) this;
+  block->_die_boundary = r;
+}
+
+void dbBlock::getDieBoundary(Poly& r)
+{
+  _dbBlock* block = (_dbBlock*) this;
+  r               = block->_die_boundary;
 }
 
 void dbBlock::setDieArea(const Rect& r)

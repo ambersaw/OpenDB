@@ -424,6 +424,74 @@ class Rect : public GeomShape
   friend dbOStream& operator<<(dbOStream& stream, const Rect& r);
 };
 
+class Poly : public GeomShape
+{
+  // TODO: dir should be defined.
+  std::vector<Point> _points;
+  bool      is_poly = false;
+  public:
+  enum POLY_DIR
+  {
+    CLOCKWISE,
+    COUNTERCLOCKWISE,
+    UNKNOWN
+  };
+  Poly() = default;
+  Poly(const Poly& r);
+  Poly(std::vector<Point> p);
+  ~Poly() = default;
+  uint dx() const override {
+    return (uint) (xMax() - xMin());
+  }
+  uint dy() const override {
+    return (uint) (yMax() - yMin());
+  }
+  int xMin() const override {
+    return (uint) ((std::min_element(_points.begin(), _points.end(), cmpX))->x());
+  }
+  int yMin() const override {
+    return (uint) ((std::min_element(_points.begin(), _points.end(), cmpY))->y());
+  }
+  int xMax() const override {
+    return (uint) ((std::max_element(_points.begin(), _points.end(), cmpX))->x());
+  }
+  int yMax() const override {
+    return (uint) ((std::max_element(_points.begin(), _points.end(), cmpY))->y());
+  }
+  void addPoint(Point p) {
+    // TODO: the points should be counter clock wise
+    // Now: only consider the ordered points
+    _points.push_back(p);
+  }
+  std::vector<Point> getPoints() const override {
+    return _points;
+  }
+  Poly& operator=(const Poly& r) = default;
+  bool  operator==(const Poly& r) const {
+    for (std::vector<odb::Point>::size_type i = 0; i != _points.size(); ++i) {
+      if (_points[i] != r.getPoints()[i]) {
+        return false;
+      }
+    }
+    if (is_poly != r.is_poly) {
+      return false;
+    }
+    return true;
+  }
+  bool  operator!=(const Poly& r) const{return !(r==*this);};
+
+  friend dbIStream& operator>>(dbIStream& stream, Poly& o);
+  friend dbOStream& operator<<(dbOStream& stream, const Poly& o);
+
+  private:
+  static bool cmpX(const Point& a, const Point &b) {
+    return a.x() < b.x();
+  }
+  static bool cmpY(const Point& a, const Point &b) {
+    return a.y() < b.y();
+  }
+};
+
 inline Point::Point()
 {
   _x = 0;
@@ -952,4 +1020,16 @@ inline int Oct::getWidth() const
 {
   return A*2; 
 }
+
+inline Poly::Poly(const Poly& r) {
+  _points = r._points;
+  is_poly = r.is_poly;
+}
+inline Poly::Poly(std::vector<Point> p) {
+  _points.insert(_points.end(), p.begin(), p.end());
+  if (_points.size() > 2) {
+    is_poly = true;
+  }
+}
+
 }  // namespace odb

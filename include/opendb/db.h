@@ -1159,6 +1159,17 @@ class dbBlock : public dbObject
   /// Get the list of masters used in this block.
   ///
   void getMasters(std::vector<dbMaster*>& masters);
+  ///
+  /// Set the die Boundary box. The die-area is considered a constant regardless
+  /// of the geometric elements of the dbBlock. It is generally a constant
+  /// declared in DEF.
+  ///
+  void setDieBoundary(const Poly& r);
+
+  ///
+  /// Get the die Boundary box. The default die-area is (0,0,0,0).
+  ///
+  void getDieBoundary(Poly& r);
 
   ///
   /// Set the die area. The die-area is considered a constant regardless

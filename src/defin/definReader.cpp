@@ -35,7 +35,7 @@
 #include <stdlib.h>
 
 #include <string>
-
+#include <iostream>
 #include "db.h"
 #include "dbShape.h"
 #include "definBlockage.h"
@@ -433,6 +433,7 @@ int definReader::dieAreaCallback(defrCallbackType_e /* unused: type */,
       Rect  r(p0.getX(), p0.getY(), p1.getX(), p1.getY());
       reader->_block->setDieArea(r);
     } else {
+      reader->_block->setDieBoundary(P);
       notice(0,
              "warning: Polygon DIEAREA statement not supported.  The bounding "
              "box will be used instead\n");
