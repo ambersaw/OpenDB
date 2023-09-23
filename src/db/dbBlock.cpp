@@ -2475,8 +2475,13 @@ dbBlock* dbBlock::create(dbChip* chip_, const char* name_, char hier_delimeter_)
 {
   _dbChip* chip = (_dbChip*) chip_;
 
-  if (chip->_top != 0)
-    return NULL;
+  //// Modified by A7EN @2023/09/23, comment out
+  // if (chip->_top != 0)
+  //   return NULL;
+
+  //// Add to support multiple blocks creation
+  dbBlock *blk = chip_->getBlockByName(name_);
+  if (blk) return NULL;
 
   _dbBlock* top = chip->_block_tbl->create();
   top->initialize(chip, NULL, name_, hier_delimeter_);

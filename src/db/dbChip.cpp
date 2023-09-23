@@ -186,6 +186,38 @@ dbBlock* dbChip::getBlock()
   return (dbBlock*) chip->_block_tbl->getPtr(chip->_top);
 }
 
+dbBlock* dbChip::getBlockByName(const char* name_)
+{
+  if (name_ == NULL) return NULL;
+  dbSet<dbBlock>           blocks = getBlocks();
+  dbSet<dbBlock>::iterator itr;
+  
+  for (itr = blocks.begin(); itr != blocks.end(); ++itr) {
+    _dbBlock* blk = (_dbBlock*) *itr;
+    if (strcmp(blk->_name, name_) == 0) {
+      return (dbBlock*) blk;
+    }
+  }
+
+  return NULL;
+}
+
+dbSet<dbBlock> dbChip::getBlocks()
+{
+  _dbChip* chip = (_dbChip*) this;
+  return dbSet<dbBlock>(chip, chip->_block_tbl);
+}
+
+dbBlock* dbChip::setTop(const char* name_)
+{
+  _dbChip* chip = (_dbChip*) this;
+  _dbBlock* blk = (_dbBlock*) getBlockByName(name_);
+  if (blk) {
+    chip->_top = blk->getOID();
+  }
+  return (dbBlock*) blk;
+}
+
 dbChip* dbChip::create(dbDatabase* db_)
 {
   _dbDatabase* db = (_dbDatabase*) db_;

@@ -752,6 +752,9 @@ class dbChip : public dbObject
   /// Returns NULL if a top-block has NOT been created.
   ///
   dbBlock* getBlock();
+  dbBlock* getBlockByName(const char* name);
+  dbBlock* setTop(const char* name);
+  dbSet<dbBlock> getBlocks();
 
   ///
   /// Create a new chip.

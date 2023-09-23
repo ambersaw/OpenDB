@@ -54,8 +54,15 @@
 #include "definTracks.h"
 #include "definVia.h"
 
+/*
 #define UNSUPPORTED(msg)              \
   reader->error((msg));               \
+  if (!reader->_continue_on_errors) { \
+    return PARSE_ERROR;               \
+  }
+*/
+
+#define UNSUPPORTED(msg)              \
   if (!reader->_continue_on_errors) { \
     return PARSE_ERROR;               \
   }
@@ -1558,19 +1565,37 @@ dbChip* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
   if (hdr == NULL)
     return NULL;
 
-  if (_db->getChip()) {
-    fprintf(stderr, "Error: Chip already exists\n");
-    return NULL;
-  }
+  //// Modified by A7EN @ 2023/09/22, comment out
+  // if (_db->getChip()) {
+  //   fprintf(stderr, "Error: Chip already exists\n");
+  //   return NULL;
+  // }
 
-  dbChip* chip = dbChip::create(_db);
+  // dbChip* chip = dbChip::create(_db);
+  // assert(chip);
+
+  //// Support read multiple def files into one chip with different blocks
+  dbChip* chip = NULL;
+  if (_db->getChip()) {
+    chip = _db->getChip();
+  } else {
+    chip = dbChip::create(_db);
+  }
   assert(chip);
 
+  const char *block_name;
   if (_block_name)
-    _block = dbBlock::create(chip, _block_name, hdr->_hier_delimeter);
+    block_name = _block_name;
   else
-    _block = dbBlock::create(chip, hdr->_design, hdr->_hier_delimeter);
+    block_name = hdr->_design;
 
+  _block = chip->getBlockByName(block_name);
+  if (_block) {
+    return NULL;
+  } else {
+    _block = dbBlock::create(chip, block_name, hdr->_hier_delimeter);
+  }
+  
   assert(_block);
   setBlock(_block);
   setTech(_db->getTech());

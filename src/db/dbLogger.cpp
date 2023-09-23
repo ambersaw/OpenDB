@@ -268,7 +268,8 @@ int notice(int code, const char* msg, ...)
   vsnprintf(_ath_logbuffer, sizeof(_ath_logbuffer), msg, args);
   va_end(args);
 
-  if (fprintf(stderr, "Notice %d: %s", code, _ath_logbuffer) >= 0)
+  // if (fprintf(stderr, "Notice %d: %s", code, _ath_logbuffer) >= 0)
+  if (fprintf(stderr, "[DB] %s", _ath_logbuffer) >= 0)
     return TCL_OK;
   else
     return TCL_ERROR;
