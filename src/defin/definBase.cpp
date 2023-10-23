@@ -41,25 +41,22 @@ definBase::definBase()
   _tech        = NULL;
   _block       = NULL;
   _errors      = 0;
-  // _dist_factor = 10;
-  _dist_factor = 1;
+  _dist_factor = 10;
 }
 
-//// Modified by A7EN @ 2023/09/22, _dist_factor always be 1
+//// Modified by A7EN @ 2023/09/22
 void definBase::init()
 {
   _tech        = NULL;
   _block       = NULL;
   _errors      = 0;
-  // _dist_factor = 10;
-  _dist_factor = 1;
+  _dist_factor = 10;
 }
 
 void definBase::units(int d)
 {
   int dbu      = _tech->getDbUnitsPerMicron();
   _dist_factor = dbu / d;
-  _dist_factor = 1;
 }
 
 void definBase::setTech(dbTech* tech)
@@ -67,7 +64,6 @@ void definBase::setTech(dbTech* tech)
   _tech        = tech;
   int dbu      = _tech->getDbUnitsPerMicron();
   _dist_factor = dbu / 100;
-  _dist_factor = 1;
 }
 
 void definBase::setBlock(dbBlock* block)
