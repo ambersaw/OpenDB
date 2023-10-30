@@ -7557,7 +7557,7 @@ class dbModInst : public dbObject
 
   static dbModInst* getModInst(dbBlock* block_, uint dbid_);
 
-  char* getName() const;
+  std::string getName() const;
   // User Code End dbModInst
 };
 

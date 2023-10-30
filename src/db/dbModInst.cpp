@@ -274,13 +274,14 @@ dbModInst* dbModInst::getModInst(dbBlock* block_, uint dbid_)
   return (dbModInst*) block->_modinst_tbl->getPtr(dbid_);
 }
 
-char* dbModInst::getName() const
+std::string dbModInst::getName() const
 {
-  _dbModInst* obj    = (_dbModInst*) this;
+  _dbModInst* obj = (_dbModInst*) this;
   std::string h_name = std::string(obj->_name);
-  size_t      idx    = h_name.find_last_of('/');
-  return strdup(h_name.substr(idx + 1).c_str());
+  size_t idx = h_name.find_last_of('/');
+  return h_name.substr(idx + 1);
 }
+
 // User Code End dbModInstPublicMethods
 }  // namespace odb
    // Generator Code End 1
