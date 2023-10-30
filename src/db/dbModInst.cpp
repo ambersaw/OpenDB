@@ -282,6 +282,17 @@ std::string dbModInst::getName() const
   return h_name.substr(idx + 1);
 }
 
+std::string dbModInst::getHierarchicalName() const
+{
+  _dbModInst* _obj = (_dbModInst*) this;
+  dbBlock* block = (dbBlock*) _obj->getOwner();
+  std::string inst_name = getName();
+  dbModule* parent = getParent();
+  if (parent == block->getTopModule())
+    return inst_name;
+  else
+    return parent->getModInst()->getHierarchicalName() + "/" + inst_name;
+}
 // User Code End dbModInstPublicMethods
 }  // namespace odb
    // Generator Code End 1

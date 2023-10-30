@@ -7558,6 +7558,8 @@ class dbModInst : public dbObject
   static dbModInst* getModInst(dbBlock* block_, uint dbid_);
 
   std::string getName() const;
+  std::string getHierarchicalName() const;
+  
   // User Code End dbModInst
 };
 
