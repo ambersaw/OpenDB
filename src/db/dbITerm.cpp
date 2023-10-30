@@ -528,8 +528,7 @@ void dbITerm::disconnect(dbITerm* iterm_)
 }
 void dbITerm::disconnect()
 {
-  _dbITerm* iterm = (_dbITerm*) this;
-  disconnect(iterm);
+  disconnect(this);
 }
 
 dbSet<dbITerm>::iterator dbITerm::disconnect(dbSet<dbITerm>::iterator& itr)

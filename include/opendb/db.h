@@ -3385,7 +3385,7 @@ class dbITerm : public dbObject
   ///
   /// Disconnect this iterm from the net it is connected to.
   ///
-  void dbITerm::disconnect()
+  void disconnect();
 
 
   ///
