@@ -477,6 +477,10 @@ void dbITerm::connect(dbITerm* iterm_, dbNet* net_)
   for(auto callback:block->_callbacks)
     callback->inDbITermPostConnect(iterm_);
 }
+void dbITerm::connect(dbNet* net_)
+{
+  connect(this, net_);
+}
 
 void dbITerm::disconnect(dbITerm* iterm_)
 {

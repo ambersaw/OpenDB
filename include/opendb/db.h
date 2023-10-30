@@ -3373,6 +3373,11 @@ class dbITerm : public dbObject
   static void connect(dbITerm* iterm, dbNet* net);
 
   ///
+  /// Connect this iterm to this net.
+  ///
+  void connect(dbNet* net);
+
+  ///
   /// Disconnect this iterm from the net it is connected to.
   ///
   static void disconnect(dbITerm* iterm);
