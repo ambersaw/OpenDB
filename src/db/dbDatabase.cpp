@@ -384,6 +384,24 @@ dbLib* dbDatabase::findLib(const char* name)
   return NULL;
 }
 
+dbSet<dbTech> dbDatabase::getTechs()
+{
+  _dbDatabase* db = (_dbDatabase*) this;
+  return dbSet<dbTech>(db, db->_tech_tbl);
+}
+
+dbTech* dbDatabase::findTech(const char* name)
+{
+  for (auto tech : getTechs()) {
+    auto tech_impl = (_dbTech*) tech;
+    if (tech_impl->_name == name) {
+      return tech;
+    }
+  }
+
+  return nullptr;
+}
+
 dbMaster* dbDatabase::findMaster(const char* name)
 {
   dbSet<dbLib>           libs = getLibs();

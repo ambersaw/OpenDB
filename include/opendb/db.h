@@ -291,6 +291,18 @@ class dbDatabase : public dbObject
   /// Returns NULL if no lib was found.
   ///
   dbLib* findLib(const char* name);
+  
+  ///
+  /// Return the techs contained in the database. A database can contain
+  /// multiple techs.
+  ///
+  dbSet<dbTech> getTechs();
+
+  ///
+  /// Find a specific tech.
+  /// Returns nullptr if no tech was found.
+  ///
+  dbTech* findTech(const char* name);
 
   ///
   /// Find a specific master
