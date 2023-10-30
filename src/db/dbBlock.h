@@ -86,6 +86,7 @@ class _dbFill;
 class _dbRegion;
 class _dbHier;
 class _dbBPin;
+class _dbTech;
 class _dbTechLayerRule;
 class _dbTechNonDefaultRule;
 class _dbModule;
@@ -164,6 +165,7 @@ class _dbBlock : public _dbObject
   char*                      _name;
   Rect                       _die_area;
   Poly                       _die_boundary;
+  dbId<_dbTech> _tech;
   dbId<_dbChip>              _chip;
   dbId<_dbBox>               _bbox;
   dbId<_dbBlock>             _parent;
@@ -171,7 +173,6 @@ class _dbBlock : public _dbObject
   dbId<_dbGCellGrid>         _gcell_grid;
   dbId<_dbBlock>             _parent_block;  // Up hierarchy: TWG
   dbId<_dbInst>              _parent_inst;   // Up hierarchy: TWG
-  dbId<_dbModule> _top_module;
   dbHashTable<_dbNet>        _net_hash;
   dbHashTable<_dbInst>       _inst_hash;
   dbHashTable<_dbModule>     _module_hash;
@@ -186,6 +187,7 @@ class _dbBlock : public _dbObject
   int                        _maxExtModelIndex;
   dbVector<dbId<_dbBlock> >  _children;
   uint                       _currentCcAdjOrder;
+  dbId<_dbModule> _top_module;
 
   // NON-PERSISTANT-STREAMED-MEMBERS
   dbTable<_dbBTerm>*              _bterm_tbl;
@@ -269,6 +271,7 @@ class _dbBlock : public _dbObject
   void remove_rect(const Rect& rect);
   void invalidate_bbox() { _flags._valid_bbox = 0; }
   void initialize(_dbChip*    chip,
+                  _dbTech* tech,
                   _dbBlock*   parent,
                   const char* name,
                   char        delimeter);
@@ -277,7 +280,7 @@ class _dbBlock : public _dbObject
   bool operator!=(const _dbBlock& rhs) const { return !operator==(rhs); }
   void differences(dbDiff& diff, const char* field, const _dbBlock& rhs) const;
   void out(dbDiff& diff, char side, const char* field) const;
-
+  _dbTech* getTech();
   dbObjectTable* getObjectTable(dbObjectType type);
 };
 

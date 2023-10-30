@@ -65,6 +65,10 @@ const uint db_schema_major   = 0;  // Not used...
 const uint db_schema_initial = 51;
 const uint db_schema_minor   = 51;  // Current revision number
 
+// Revision where _tech moved to _dbBlock & _dbLib from _dbDatabase.
+// Added name to dbTech.
+const uint db_schema_block_tech = 66;
+
 template <class T>
 class dbTable;
 class _dbProperty;

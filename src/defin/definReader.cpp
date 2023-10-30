@@ -1593,7 +1593,7 @@ dbChip* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
   if (_block) {
     return NULL;
   } else {
-    _block = dbBlock::create(chip, block_name, hdr->_hier_delimeter);
+    _block = dbBlock::create(chip, block_name, nullptr, hdr->_hier_delimeter);
   }
   
   assert(_block);
@@ -1684,7 +1684,7 @@ dbBlock* definReader::createBlock(dbBlock*             parent,
     block_name = new_name;
   }
 
-  _block = dbBlock::create(parent, block_name.c_str(), hdr->_hier_delimeter);
+  _block = dbBlock::create(parent, block_name.c_str(), nullptr, hdr->_hier_delimeter);
 
   if (_block == NULL) {
     fprintf(stderr,

@@ -863,6 +863,11 @@ class dbBlock : public dbObject
   dbModule* getTopModule();
 
   ///
+  /// Get the Top modules of this block.
+  ///
+  dbTech* getTech();
+
+  ///
   /// Get the modinsts of this block.
   ///
   dbSet<dbModInst> getModInsts();
@@ -1516,6 +1521,7 @@ class dbBlock : public dbObject
   ///
   static dbBlock* create(dbChip*     chip,
                          const char* name,
+                         dbTech* tech_ = nullptr,
                          char        hier_delimeter = 0);
 
   ///
@@ -1524,6 +1530,7 @@ class dbBlock : public dbObject
   ///
   static dbBlock* create(dbBlock*    block,
                          const char* name,
+                         dbTech* tech_ = nullptr,
                          char        hier_delimeter = 0);
 
   ///

@@ -117,7 +117,7 @@ dbBlock* dbCreateNetUtil::createBlock(dbBlock* blk,
             "there is already an ECO block present!, will continue updating\n");
     return _block;
   }
-  _block = dbBlock::create(blk, blk_name, '/');
+  _block = dbBlock::create(blk, blk_name, nullptr, '/');
   assert(_block);
   _block->setBusDelimeters('[', ']');
   _block->setBusDelimeters('[', ']');
