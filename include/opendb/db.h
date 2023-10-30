@@ -858,6 +858,11 @@ class dbBlock : public dbObject
   dbSet<dbModule> getModules();
 
   ///
+  /// Get the Top modules of this block.
+  ///
+  dbModule* dbBlock::getTopModule()
+
+  ///
   /// Get the modinsts of this block.
   ///
   dbSet<dbModInst> getModInsts();

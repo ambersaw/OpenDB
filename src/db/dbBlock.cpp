@@ -428,7 +428,7 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
       _maxExtModelIndex(block._maxExtModelIndex),
       _children(block._children),
       _currentCcAdjOrder(block._currentCcAdjOrder),
-      _top_module(block._top_module),
+      _top_module(block._top_module)
 {
   if (block._name) {
     _name = strdup(block._name);
