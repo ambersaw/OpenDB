@@ -228,7 +228,23 @@ const char* dbSigType::getString() const
 
   return value;
 }
-
+bool dbSigType::isSupply() const
+{
+  switch (_value) {
+    case POWER:
+    case GROUND:
+      return true;
+    case SIGNAL:
+    case CLOCK:
+    case ANALOG:
+    case RESET:
+    case SCAN:
+    case TIEOFF:
+      return false;
+  }
+  assert(false);
+  return false;
+}
 dbIoType::dbIoType(const char* value)
 {
   if (strcasecmp(value, "INPUT") == 0)

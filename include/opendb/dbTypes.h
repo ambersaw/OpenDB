@@ -153,10 +153,24 @@ class dbSigType
   ///
   const char* getString() const;
 
+
+  ///
+  ///  True Iff value corresponds to POWER or GROUND
+  ///
+  bool isSupply() const;
+
   ///
   /// Cast operator
   ///
   operator Value() const { return _value; }
+
+  ///
+  /// Comparison operators for type safe dbSigType
+  ///
+  bool operator==(const dbSigType& v) const { return _value == v._value; };
+  bool operator!=(const dbSigType& v) const { return _value != v._value; };
+  bool operator==(const Value v) const { return _value == v; };
+  bool operator!=(const Value v) const { return _value != v; };
 
  private:
   Value _value;
