@@ -526,6 +526,11 @@ void dbITerm::disconnect(dbITerm* iterm_)
   for(auto callback:block->_callbacks)
     callback->inDbITermPostDisconnect(iterm_,(dbNet*)net);
 }
+void dbITerm::disconnect()
+{
+  _dbITerm* iterm = (_dbITerm*) this;
+  disconnect(iterm);
+}
 
 dbSet<dbITerm>::iterator dbITerm::disconnect(dbSet<dbITerm>::iterator& itr)
 {

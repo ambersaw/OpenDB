@@ -3385,6 +3385,12 @@ class dbITerm : public dbObject
   ///
   /// Disconnect this iterm from the net it is connected to.
   ///
+  void dbITerm::disconnect()
+
+
+  ///
+  /// Disconnect this iterm from the net it is connected to.
+  ///
   static dbSet<dbITerm>::iterator disconnect(dbSet<dbITerm>::iterator& itr);
 
   ///
