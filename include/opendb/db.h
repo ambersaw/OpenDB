@@ -860,7 +860,7 @@ class dbBlock : public dbObject
   ///
   /// Get the Top modules of this block.
   ///
-  dbModule* dbBlock::getTopModule()
+  dbModule* getTopModule();
 
   ///
   /// Get the modinsts of this block.
