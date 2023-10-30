@@ -50,6 +50,14 @@ class defin
   definReader* _reader;
 
  public:
+  enum MODE
+  {
+    DEFAULT,     // creates db from scratch (from def)
+    FLOORPLAN,   // update existing COMPONENTS PINS DIEAREA TRACKS ROWS NETS
+                 // SNETS
+    INCREMENTAL  // update existing COMPONENTS PINS
+  };
+
   defin(dbDatabase* db);
   ~defin();
 
