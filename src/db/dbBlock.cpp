@@ -427,7 +427,8 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
       _minExtModelIndex(block._minExtModelIndex),
       _maxExtModelIndex(block._maxExtModelIndex),
       _children(block._children),
-      _currentCcAdjOrder(block._currentCcAdjOrder)
+      _currentCcAdjOrder(block._currentCcAdjOrder),
+      _top_module(block._top_module),
 {
   if (block._name) {
     _name = strdup(block._name);
@@ -755,6 +756,9 @@ void _dbBlock::initialize(_dbChip*    chip,
   _chip           = chip->getOID();
   _hier_delimeter = delimeter;
 
+  _dbModule* _top = (_dbModule*) dbModule::create((dbBlock*) this, name);
+  _top_module = _top->getOID();
+
   if (parent) {
     _def_units      = parent->_def_units;
     _dbu_per_micron = parent->_dbu_per_micron;
@@ -879,6 +883,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbBlock& block)
   stream << block._chip;
   stream << block._bbox;
   stream << block._parent;
+  stream << block._top_module;
   stream << block._next_block;
   stream << block._gcell_grid;
   if (block._flags._skip_hier_stream) {
@@ -976,6 +981,7 @@ dbIStream& operator>>(dbIStream& stream, _dbBlock& block)
   stream >> block._gcell_grid;
   stream >> block._parent_block;
   stream >> block._parent_inst;
+  stream >> block._top_module;
   stream >> block._net_hash;
   stream >> block._inst_hash;
   stream >> block._module_hash;
@@ -1127,6 +1133,9 @@ bool _dbBlock::operator==(const _dbBlock& rhs) const
     return false;
 
   if (_parent_inst != rhs._parent_inst)
+    return false;
+
+  if (_top_module != rhs._top_module)
     return false;
 
   if (_net_hash != rhs._net_hash)
@@ -1294,6 +1303,7 @@ void _dbBlock::differences(dbDiff&         diff,
   DIFF_OBJECT(_gcell_grid, _gcell_grid_tbl, rhs._gcell_grid_tbl);
   DIFF_FIELD(_parent_block);
   DIFF_FIELD(_parent_inst);
+  DIFF_FIELD(_top_module);
 
   if (!diff.deepDiff()) {
     DIFF_HASH_TABLE(_net_hash);
@@ -1376,6 +1386,7 @@ void _dbBlock::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_OBJECT(_gcell_grid, _gcell_grid_tbl);
   DIFF_OUT_FIELD(_parent_block);
   DIFF_OUT_FIELD(_parent_inst);
+  DIFF_OUT_FIELD(_top_module);
 
   if (!diff.deepDiff()) {
     DIFF_OUT_HASH_TABLE(_net_hash);
@@ -1568,6 +1579,12 @@ dbInst* dbBlock::getParentInst()
   _dbBlock* parent_block = chip->_block_tbl->getPtr(block->_parent_block);
   _dbInst*  parent_inst  = parent_block->_inst_tbl->getPtr(block->_parent_inst);
   return (dbInst*) parent_inst;
+}
+
+dbModule* dbBlock::getTopModule()
+{
+  _dbBlock* block = (_dbBlock*) this;
+  return (dbModule*) block->_module_tbl->getPtr(block->_top_module);
 }
 
 dbSet<dbBlock> dbBlock::getChildren()
