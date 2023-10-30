@@ -43,6 +43,7 @@ class dbInst;
 class dbMaster;
 class dbNet;
 class dbITerm;
+class dbIoType;
 class dbWire;
 class dbBTerm;
 class dbBPin;
@@ -90,6 +91,7 @@ class dbBlockCallBackObj
   //dbBTerm Start
   virtual void inDbBTermCreate(dbBTerm*) {}
   virtual void inDbBTermDestroy(dbBTerm*) {}
+  virtual void inDbBTermSetIoType(dbBTerm*, const dbIoType&) {};
   virtual void inDbBTermPreConnect(dbBTerm*, dbNet*) {}
   virtual void inDbBTermPostConnect(dbBTerm*) {}
   virtual void inDbBTermPreDisconnect(dbBTerm*) {}
