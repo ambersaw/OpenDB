@@ -123,6 +123,7 @@ class dbTechVia;
 class dbTechViaRule;
 class dbTechViaLayerRule;
 class dbTechViaGenerateRule;
+class dbMetalWidthViaMa;
 class dbTechNonDefaultRule;
 class dbTechLayerRule;
 class dbTechLayerSpacingRule;
@@ -179,6 +180,12 @@ class dbProperty : public dbObject
   // 5.8
   static void writeProperties(dbObject* object, FILE* out);
   static void writePropValue(dbProperty* prop, FILE* out);
+  // static std::string writeProperties( dbTechLayer * object );
+  static std::string writeProperties(dbObject* object);
+
+  static std::string writePropValue(dbProperty* prop);
+
+
 };
 
 ///
@@ -658,6 +665,11 @@ class dbBox : public dbObject
   /// This function translates any dbBox whichs is part of a master.
   ///
   static dbBox* getBox(dbMaster* master, uint oid);
+
+  ///
+  /// Get Box
+  ///
+  Rect getBox();
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -3979,6 +3991,52 @@ class dbTrackGrid : public dbObject
   static void destroy(dbTrackGrid* grid_);
 };
 
+class dbMetalWidthViaMap : public dbObject
+{
+ public:
+  void setViaCutClass(bool via_cut_class);
+
+  bool isViaCutClass() const;
+
+  void setCutLayer(dbTechLayer* cut_layer);
+
+  void setBelowLayerWidthLow(int below_layer_width_low);
+
+  int getBelowLayerWidthLow() const;
+
+  void setBelowLayerWidthHigh(int below_layer_width_high);
+
+  int getBelowLayerWidthHigh() const;
+
+  void setAboveLayerWidthLow(int above_layer_width_low);
+
+  int getAboveLayerWidthLow() const;
+
+  void setAboveLayerWidthHigh(int above_layer_width_high);
+
+  int getAboveLayerWidthHigh() const;
+
+  void setViaName(std::string via_name);
+
+  std::string getViaName() const;
+
+  void setPgVia(bool pg_via);
+
+  bool isPgVia() const;
+
+  // User Code Begin dbMetalWidthViaMap
+
+  dbTechLayer* getCutLayer() const;
+
+  static dbMetalWidthViaMap* create(dbTech* tech);
+
+  static void destroy(dbMetalWidthViaMap* via_map);
+
+  static dbMetalWidthViaMap* getMetalWidthViaMap(dbTech* tech, uint dbid);
+
+  // User Code End dbMetalWidthViaMap
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 ///
 /// A dbObstruction is the element that represents a routing
@@ -5927,6 +5985,11 @@ class dbTech : public dbObject
   ///
   ///
   dbSet<dbTechViaGenerateRule> getViaGenerateRules();
+  
+  ///
+  ///
+  ///
+  dbSet<dbMetalWidthViaMap> getMetalWidthViaMap();
 
   ///
   ///
@@ -6024,6 +6087,7 @@ class dbTechLayer : public dbObject
   /// Contents of sp_rules are undefined if function returns false.
   ///
   bool getV54SpacingRules(dbSet<dbTechLayerSpacingRule>& sp_rules) const;
+  dbSet<dbTechLayerSpacingRule> getV54SpacingRules() const;
 
   // Get the collection of Eol Spacing Rules for the object
   dbSet<dbTechLayerSpacingEolRule> getEolSpacingRules() const;
@@ -6047,6 +6111,8 @@ class dbTechLayer : public dbObject
   void addV55SpacingTableEntry(uint inrow, uint incol, uint spacing);
 
   bool getV55InfluenceRules(std::vector<dbTechV55InfluenceEntry*>& inf_tbl);
+  dbSet<dbTechV55InfluenceEntry> getV55InfluenceRules();
+
   dbSet<dbTechV55InfluenceEntry> getV55InfluenceEntries();
 
   ///
@@ -6206,6 +6272,13 @@ class dbTechLayer : public dbObject
   /// Get mask-order number of this layer.
   ///
   int getNumber() const;
+
+  ///
+  /// The number of masks for this layer (aka double/triple patterning).
+  /// Allowable values are in [1, 3].
+  ///
+  uint getNumMasks() const;
+  void setNumMasks(uint number);
 
   ///
   /// Get routing-level of this routing layer. The routing level

@@ -14,6 +14,7 @@
 #include "lefout.h"
 #include "defin.h"
 #include "defout.h"
+#include <fstream>
 
 odb::dbLib*
 read_lef(odb::dbDatabase* db, const char* path)
@@ -49,14 +50,22 @@ write_def(odb::dbBlock* block, const char* path,
 
 int
 write_lef(odb::dbLib* lib, const char* path) {
-  lefout writer;
-  return writer.writeTechAndLib(lib, path);
+  std::ofstream os;
+  os.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  os.open(path);
+  lefout writer(os);
+  writer.writeTechAndLib(lib);
+  return 1;
 }
 
 int
 write_tech_lef(odb::dbTech* tech, const char* path) {
-  lefout writer;
-  return writer.writeTech(tech, path);
+  std::ofstream os;
+  os.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  os.open(path);
+  lefout writer(os);
+  writer.writeTech(tech);
+  return 1;
 }
 
 odb::dbDatabase*

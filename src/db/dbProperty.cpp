@@ -43,7 +43,8 @@
 #include "dbTable.h"
 #include "dbTable.hpp"
 #include "dbTech.h"
-
+#include <spdlog/fmt/fmt.h>
+#include <sstream>
 namespace odb {
 
 template class dbTable<_dbProperty>;
@@ -666,6 +667,30 @@ void dbProperty::writePropValue(dbProperty* prop, FILE* out)
       break;
   }
 }
+std::string dbProperty::writePropValue(dbProperty* prop)
+{
+  switch (prop->getType()) {
+    case dbProperty::STRING_PROP: {
+      dbStringProperty* p = (dbStringProperty*) prop;
+      std::string v = p->getValue();
+      return fmt::format("\"{}\" ", v);
+    }
+
+    case dbProperty::INT_PROP: {
+      dbIntProperty* p = (dbIntProperty*) prop;
+      int v = p->getValue();
+      return fmt::format("{} ", v);
+    }
+
+    case dbProperty::DOUBLE_PROP: {
+      dbDoubleProperty* p = (dbDoubleProperty*) prop;
+      double v = p->getValue();
+      return fmt::format("{:G} ", v);
+    }
+    default:
+      return "";
+  }
+}
 
 void dbProperty::writeProperties(dbObject* object, FILE* out)
 {
@@ -679,6 +704,21 @@ void dbProperty::writeProperties(dbObject* object, FILE* out)
     writePropValue(prop, out);
     fprintf(out, ";\n");
   }
+}
+
+std::string dbProperty::writeProperties(dbObject* object)
+{
+  dbSet<dbProperty> props = dbProperty::getProperties(object);
+  dbSet<dbProperty>::iterator itr;
+  std::ostringstream out;
+
+  for (itr = props.begin(); itr != props.end(); ++itr) {
+    dbProperty* prop = *itr;
+    std::string name = prop->getName();
+    out << fmt::format("    PROPERTY {} {};\n", name, writePropValue(prop));
+  }
+
+  return out.str();
 }
 
 /* Sample Code to access dbTechLayer properties

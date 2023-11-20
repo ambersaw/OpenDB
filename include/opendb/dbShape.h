@@ -237,6 +237,11 @@ class dbShape
   void getBox(Rect& rect) const;
 
   ///
+  /// Get the box bounding points.
+  ///
+  Rect getBox() const;
+
+  ///
   /// Get the width (xMax-xMin) of the box.
   ///
   uint getDX() const;
@@ -583,6 +588,11 @@ inline void dbShape::getBox(Rect& rect) const
 {
   rect = _rect;
 }
+inline Rect dbShape::getBox() const
+{
+  return _rect;
+}
+
 inline uint dbShape::getDX() const
 {
   return _rect.dx();

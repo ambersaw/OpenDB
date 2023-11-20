@@ -33,7 +33,7 @@
 #pragma once
 
 #include <string.h>
-
+#include <string>
 #include "ZException.h"
 #include "odb.h"
 
@@ -151,6 +151,16 @@ class dbOStream
 
     return *this;
   }
+  dbOStream& operator<<(const std::string& c)
+  {
+    if (c.empty()) {
+      *this << 0;
+    } else {
+      *this << c;
+    }
+
+    return *this;
+  }
 
   void markStream()
   {
@@ -200,6 +210,12 @@ class dbIStream
     int n = fread(&c, sizeof(c), 1, _f);
     if (n != 1)
       read_error();
+    return *this;
+  }
+
+  dbIStream& operator>>(std::string& s)
+  {
+    *this >> s;
     return *this;
   }
 

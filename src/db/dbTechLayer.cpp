@@ -42,6 +42,8 @@
 #include "dbTechLayerSpacingEolRule.h"
 #include "dbTechMinCutOrAreaRule.h"
 #include "lefout.h"
+#include <spdlog/fmt/ostr.h>
+#include <spdlog/fmt/fmt.h>
 
 namespace odb {
 
@@ -49,6 +51,9 @@ template class dbTable<_dbTechLayer>;
 
 bool _dbTechLayer::operator==(const _dbTechLayer& rhs) const
 {
+  if (_flags.num_masks_ != rhs._flags.num_masks_)
+    return false;
+
   if (_flags._type != rhs._flags._type)
     return false;
 
@@ -264,6 +269,7 @@ void _dbTechLayer::differences(dbDiff&             diff,
 void _dbTechLayer::out(dbDiff& diff, char side, const char* field) const
 {
   DIFF_OUT_BEGIN
+  DIFF_OUT_FIELD(_flags.num_masks_);
   DIFF_OUT_FIELD(_flags._type);
   DIFF_OUT_FIELD(_flags._direction);
   DIFF_OUT_FIELD(_flags._minstep_type);
@@ -323,6 +329,7 @@ void _dbTechLayer::out(dbDiff& diff, char side, const char* field) const
 
 _dbTechLayer::_dbTechLayer(_dbDatabase* db)
 {
+  _flags.num_masks_ = 1;
   _flags._type           = dbTechLayerType::ROUTING;
   _flags._direction      = dbTechLayerDir::NONE;
   _flags._minstep_type   = dbTechLayerMinStepType();
@@ -836,6 +843,11 @@ bool dbTechLayer::getV54SpacingRules(
   return true;
 }
 
+dbSet<dbTechLayerSpacingRule> dbTechLayer::getV54SpacingRules() const
+{
+  _dbTechLayer* layer = (_dbTechLayer*) this;
+  return dbSet<dbTechLayerSpacingRule>(layer, layer->_spacing_rules_tbl);
+}
 
 dbSet<dbTechLayerSpacingEolRule> dbTechLayer::getEolSpacingRules() const
 {
@@ -856,28 +868,28 @@ void dbTechLayer::printV55SpacingRules(lefout& writer) const
 {
   _dbTechLayer* layer = (_dbTechLayer*) this;
 
-  fprintf(writer.out(), "SPACINGTABLE\n");
-  fprintf(writer.out(), "  PARALLELRUNLENGTH");
+  fmt::print(writer.out(), "SPACINGTABLE\n");
+  fmt::print(writer.out(), "  PARALLELRUNLENGTH");
   dbVector<uint>::const_iterator v55_itr;
   uint                           wddx, lndx;
 
   for (v55_itr = layer->_v55sp_length_idx.begin();
        v55_itr != layer->_v55sp_length_idx.end();
        v55_itr++)
-    fprintf(writer.out(), " %.3f", writer.lefdist(*v55_itr));
+    fmt::print(writer.out(), " %.3f", writer.lefdist(*v55_itr));
 
   for (wddx = 0, v55_itr = layer->_v55sp_width_idx.begin();
        v55_itr != layer->_v55sp_width_idx.end();
        wddx++, v55_itr++) {
-    fprintf(writer.out(), "\n");
-    fprintf(writer.out(), "  WIDTH %.3f\t", writer.lefdist(*v55_itr));
+    fmt::print(writer.out(), "\n");
+    fmt::print(writer.out(), "  WIDTH %.3f\t", writer.lefdist(*v55_itr));
     for (lndx = 0; lndx < layer->_v55sp_spacing.numCols(); lndx++)
-      fprintf(writer.out(),
+      fmt::print(writer.out(),
               " %.3f",
               writer.lefdist(layer->_v55sp_spacing(wddx, lndx)));
   }
 
-  fprintf(writer.out(), " ;\n");
+  fmt::print(writer.out(), " ;\n");
 }
 
 bool dbTechLayer::getV55SpacingTable(
@@ -955,6 +967,11 @@ bool dbTechLayer::getV55InfluenceRules(
 
   return true;
 }
+dbSet<dbTechV55InfluenceEntry> dbTechLayer::getV55InfluenceRules()
+{
+  _dbTechLayer* layer = (_dbTechLayer*) this;
+  return dbSet<dbTechV55InfluenceEntry>(layer, layer->_v55inf_tbl);
+}
 
 bool dbTechLayer::hasTwoWidthsSpacingRules() const
 {
@@ -967,21 +984,21 @@ void dbTechLayer::printTwoWidthsSpacingRules(lefout& writer) const
 {
   _dbTechLayer* layer = (_dbTechLayer*) this;
 
-  fprintf(writer.out(), "SPACINGTABLE TWOWIDTHS");
+  fmt::print(writer.out(), "SPACINGTABLE TWOWIDTHS");
   dbVector<uint>::const_iterator itr;
   uint                           wddx, lndx;
 
   for (wddx = 0, itr = layer->_two_widths_sp_idx.begin();
        itr != layer->_two_widths_sp_idx.end();
        wddx++, itr++) {
-    fprintf(writer.out(), "\n  WIDTH %.3f\t", writer.lefdist(*itr));
+    fmt::print(writer.out(), "\n  WIDTH %.3f\t", writer.lefdist(*itr));
     for (lndx = 0; lndx < layer->_two_widths_sp_spacing.numCols(); lndx++)
-      fprintf(writer.out(),
+      fmt::print(writer.out(),
               " %.3f",
               writer.lefdist(layer->_two_widths_sp_spacing(wddx, lndx)));
   }
 
-  fprintf(writer.out(), " ;\n");
+  fmt::print(writer.out(), " ;\n");
 }
 
 uint dbTechLayer::getTwoWidthsSpacingTableEntry(uint row, uint col) const
@@ -1200,14 +1217,30 @@ void dbTechLayer::writeAntennaRulesLef(lefout& writer) const
   bool prt_model = (hasDefaultAntennaRule() && hasOxide2AntennaRule());
 
   if (prt_model)
-    fprintf(writer.out(), "    ANTENNAMODEL OXIDE1 ;\n");
+    fmt::print(writer.out(), "    ANTENNAMODEL OXIDE1 ;\n");
   if (hasDefaultAntennaRule())
     getDefaultAntennaRule()->writeLef(writer);
 
   if (prt_model)
-    fprintf(writer.out(), "    ANTENNAMODEL OXIDE2 ;\n");
+    fmt::print(writer.out(), "    ANTENNAMODEL OXIDE2 ;\n");
   if (hasOxide2AntennaRule())
     getOxide2AntennaRule()->writeLef(writer);
+}
+
+uint dbTechLayer::getNumMasks() const
+{
+  _dbTechLayer* layer = (_dbTechLayer*) this;
+  return layer->_flags.num_masks_;
+}
+
+void dbTechLayer::setNumMasks(uint number)
+{
+  _dbTechLayer* layer = (_dbTechLayer*) this;
+  if (number < 1 || number > 3) {
+    error(
+        282, "setNumMask %d not in range [1,3]", number);
+  }
+  layer->_flags.num_masks_ = number;
 }
 
 bool dbTechLayer::getThickness(uint& inthk) const
@@ -1614,7 +1647,7 @@ void dbProperty::GetProperties(dbTechLayer *layer)
         dbStringProperty * p = (dbStringProperty *) prop;
         std::string v = p->getValue();
 
-        fprintf(out, "PROPERTY %s ", name.c_str() );
+        fmt::print(out, "PROPERTY %s ", name.c_str() );
 */
 
 }  // namespace odb

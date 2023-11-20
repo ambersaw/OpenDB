@@ -36,7 +36,7 @@
 #endif
 #include <memory>
 #include <string>
-
+#include <fstream>
 #include "ZComponents.h"
 #include "db.h"
 #include "dbArrayTable.h"
@@ -3326,15 +3326,19 @@ dbBlock::createNetSingleWire(const char *innm, int x1, int y1, int x2, int y2, u
 
 void dbBlock::saveLef(char* filename)
 {
-  lefout writer;
+  std::ofstream os;
+  os.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  os.open(filename);
+  lefout writer(os);
   dbLib* lib = getChip()->getDb()->findLib("lib");
   if (lib == NULL) {
     warning(0, "Library lib does not exist\n");
     return;
   }
-  if (!writer.writeTechAndLib(lib, filename)) {
-    warning(0, "Failed to write lef file %s", filename);
-  }
+  writer.writeTechAndLib(lib);
+  // if (!writer.writeTechAndLib(lib)) {
+  //   warning(0, "Failed to write lef file %s", filename);
+  // }
 }
 
 //

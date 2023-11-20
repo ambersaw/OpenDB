@@ -10,6 +10,9 @@ target_include_directories(lefout
     PRIVATE
         ${PROJECT_SOURCE_DIR}/src/lefout
 )
+target_link_libraries(lefout
+    opendb
+)
 
 target_compile_features(lefout PRIVATE cxx_auto_type)
 target_compile_options(lefout PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall>)

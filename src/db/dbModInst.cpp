@@ -207,8 +207,8 @@ dbGroup* dbModInst::getGroup() const
 }
 
 // User Code Begin dbModInstPublicMethods
-dbModInst* dbModInst::create(dbModule*   parentModule,
-                             dbModule*   masterModule,
+dbModInst* dbModInst::create(dbModule*   parentModule, // Parent Module
+                             dbModule*   masterModule, // Master Module
                              const char* name)
 {
   _dbModule*  parent = (_dbModule*) parentModule;

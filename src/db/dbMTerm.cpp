@@ -42,6 +42,8 @@
 #include "dbTargetItr.h"
 #include "dbTechLayerAntennaRule.h"
 #include "lefout.h"
+#include <spdlog/fmt/ostr.h>
+#include <spdlog/fmt/fmt.h>
 
 namespace odb {
 
@@ -504,7 +506,7 @@ void dbMTerm::writeAntennaLef(lefout& writer) const
     getDefaultAntennaModel()->writeLef(tech, writer);
 
   if (hasOxide2AntennaModel()) {
-    fprintf(writer.out(), "        ANTENNAMODEL OXIDE2 ;\n");
+    fmt::print(writer.out(), "        ANTENNAMODEL OXIDE2 ;\n");
     getOxide2AntennaModel()->writeLef(tech, writer);
   }
 }

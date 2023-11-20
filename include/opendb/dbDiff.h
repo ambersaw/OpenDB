@@ -148,6 +148,7 @@ class dbDiff : public dbObject
   void diff(const char* field, Oct lhs, Oct rhs);
 
   void diff(const char* field, const char* lhs, const char* rhs);
+  void diff(const char* field, const std::string& lhs, const std::string& rhs) {diff(field, lhs.c_str(), rhs.c_str());};
   void diff(const char*         field,
             dbOrientType::Value lhs,
             dbOrientType::Value rhs);
@@ -199,6 +200,7 @@ class dbDiff : public dbObject
   void out(char side, const char* field, Rect value);
   void out(char side, const char* field, Oct value);
   void out(char side, const char* field, const char* value);
+  void out(char side, const char* field, const std::string & value) {out(side, field, value.c_str());}
   void out(char side, const char* field, dbOrientType::Value value);
   void out(char side, const char* field, dbSigType::Value value);
   void out(char side, const char* field, dbIoType::Value value);

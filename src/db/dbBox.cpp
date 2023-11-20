@@ -937,6 +937,15 @@ dbBox* dbBox::getBox(dbMaster* master_, uint dbid_)
   _dbMaster* master = (_dbMaster*) master_;
   return (dbBox*) master->_box_tbl->getPtr(dbid_);
 }
+Rect dbBox::getBox()
+{
+  _dbBox* box = (_dbBox*) this;
+  if (box->isOct()) {
+    Oct oct = box->_shape._oct;
+    return Rect(oct.xMin(), oct.yMin(), oct.xMax(), oct.yMax());
+  }
+  return box->_shape._rect;
+}
 
 bool dbBox::isVisited()
 {

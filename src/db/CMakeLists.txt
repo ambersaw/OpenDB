@@ -20,7 +20,8 @@ add_library(opendb
     dbMaster.cpp 
     dbNet.cpp 
     dbSearch.cpp
-    dbTech.cpp 
+    dbTech.cpp
+    dbMetalWidthViaMap.cpp
     dbTechLayer.cpp 
     dbTechLayerSpacingRule.cpp 
     dbTechLayerAntennaRule.cpp 
@@ -113,6 +114,7 @@ target_include_directories(opendb
     PUBLIC
         $<INSTALL_INTERFACE:include/opendb>
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/opendb>
+        ${PROJECT_SOURCE_DIR}/utl/include
     PRIVATE
         ${PROJECT_SOURCE_DIR}/src/db
 )
@@ -131,6 +133,7 @@ target_link_libraries(opendb
         lefout
         zutil
         lefin
+        utl
     PRIVATE
         tcl
 )

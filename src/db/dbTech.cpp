@@ -36,6 +36,7 @@
 #include "dbBox.h"
 #include "dbBoxItr.h"
 #include "dbDatabase.h"
+#include "dbMetalWidthViaMap.h"
 #include "dbNameCache.h"
 #include "dbProperty.h"
 #include "dbPropertyItr.h"
@@ -160,6 +161,9 @@ bool _dbTech::operator==(const _dbTech& rhs) const
   if (*_name_cache != *rhs._name_cache)
     return false;
 
+  if (*_metal_width_via_map_tbl != *rhs._metal_width_via_map_tbl)
+    return false;
+
   if (_via_hash != rhs._via_hash)
     return false;
 
@@ -207,6 +211,7 @@ void _dbTech::differences(dbDiff&        diff,
   DIFF_TABLE_NO_DEEP(_via_layer_rule_tbl);
   DIFF_TABLE_NO_DEEP(_via_generate_rule_tbl);
   DIFF_TABLE_NO_DEEP(_prop_tbl);
+  DIFF_TABLE_NO_DEEP(_metal_width_via_map_tbl);
   DIFF_NAME_CACHE(_name_cache);
   DIFF_END
 }
@@ -250,6 +255,7 @@ void _dbTech::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_TABLE_NO_DEEP(_via_layer_rule_tbl);
   DIFF_OUT_TABLE_NO_DEEP(_via_generate_rule_tbl);
   DIFF_OUT_TABLE_NO_DEEP(_prop_tbl);
+  DIFF_OUT_TABLE_NO_DEEP(_metal_width_via_map_tbl);
   DIFF_OUT_NAME_CACHE(_name_cache);
   DIFF_END
 }
@@ -360,6 +366,9 @@ _dbTech::_dbTech(_dbDatabase* db)
       db, this, (GetObjTbl_t) &_dbTech::getObjectTable, dbPropertyObj);
   ZALLOCATED(_prop_tbl);
 
+  _metal_width_via_map_tbl = new dbTable<_dbMetalWidthViaMap>(
+      db, this, (GetObjTbl_t) &_dbTech::getObjectTable, dbMetalWidthViaMapObj);
+
   _via_hash.setTable(_via_tbl);
 
   _name_cache
@@ -432,6 +441,9 @@ _dbTech::_dbTech(_dbDatabase* db, const _dbTech& t)
   _prop_tbl = new dbTable<_dbProperty>(db, this, *t._prop_tbl);
   ZALLOCATED(_prop_tbl);
 
+  _metal_width_via_map_tbl
+      = new dbTable<_dbMetalWidthViaMap>(db, this, *t._metal_width_via_map_tbl);
+
   _via_hash.setTable(_via_tbl);
 
   _name_cache = new _dbNameCache(db, this, *t._name_cache);
@@ -460,6 +472,7 @@ _dbTech::~_dbTech()
   delete _via_layer_rule_tbl;
   delete _via_generate_rule_tbl;
   delete _prop_tbl;
+  delete _metal_width_via_map_tbl;
   delete _name_cache;
   /******************************************* dimitri_fix
   dbTech.cpp:363:12: warning: deleting object of polymorphic class type
@@ -501,6 +514,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbTech& tech)
   stream << *tech._via_layer_rule_tbl;
   stream << *tech._via_generate_rule_tbl;
   stream << *tech._prop_tbl;
+  stream << *tech._metal_width_via_map_tbl;
   stream << *tech._name_cache;
   stream << tech._via_hash;
   return stream;
@@ -538,6 +552,7 @@ dbIStream& operator>>(dbIStream& stream, _dbTech& tech)
   stream >> *tech._via_layer_rule_tbl;
   stream >> *tech._via_generate_rule_tbl;
   stream >> *tech._prop_tbl;
+  stream >> *tech._metal_width_via_map_tbl;
   stream >> *tech._name_cache;
   stream >> tech._via_hash;
 
@@ -601,6 +616,8 @@ dbObjectTable* _dbTech::getObjectTable(dbObjectType type)
       return _via_generate_rule_tbl;
     case dbPropertyObj:
       return _prop_tbl;
+    case dbMetalWidthViaMapObj:
+      return _metal_width_via_map_tbl;
     default:
       break;  // WAll
   }
@@ -908,6 +925,12 @@ dbSet<dbTechViaGenerateRule> dbTech::getViaGenerateRules()
 {
   _dbTech* tech = (_dbTech*) this;
   return dbSet<dbTechViaGenerateRule>(tech, tech->_via_generate_rule_tbl);
+}
+
+dbSet<dbMetalWidthViaMap> dbTech::getMetalWidthViaMap()
+{
+  _dbTech* tech = (_dbTech*) this;
+  return dbSet<dbMetalWidthViaMap>(tech, tech->_metal_width_via_map_tbl);
 }
 
 dbTechViaRule* dbTech::findViaRule(const char* name)

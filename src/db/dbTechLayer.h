@@ -61,6 +61,7 @@ class _dbTechLayer : public _dbObject
 
   struct _LyFlags
   {
+    uint num_masks_ : 2;
     dbTechLayerType::Value        _type : 4;
     dbTechLayerDir::Value         _direction : 4;
     dbTechLayerMinStepType::Value _minstep_type : 2;
