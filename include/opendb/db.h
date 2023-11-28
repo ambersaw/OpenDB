@@ -63,7 +63,7 @@ class dbId;
 class dbDatabase;
 class dbBox;
 class dbJournalEntry;
-
+class dbSigType;
 // Property objects
 class dbProperty;
 class dbBoolProperty;
