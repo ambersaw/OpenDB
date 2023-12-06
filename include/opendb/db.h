@@ -188,6 +188,9 @@ class dbProperty : public dbObject
 
 };
 
+dbSet<dbProperty> get_properties(void* object);
+
+
 ///
 /// dbProperty - Boolean property.
 ///

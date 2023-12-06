@@ -741,4 +741,10 @@ double values
 }
 */
 
+dbSet<dbProperty> get_properties(void* object)
+{
+  return dbProperty::getProperties((dbObject*)object);
+}
+
+
 }  // namespace odb

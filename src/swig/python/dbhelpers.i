@@ -89,6 +89,87 @@ int get_int(int *i) {
   return *i;
 }
 
+bool set_str_prop(void* obj, const std::string prop_name, const std::string value)
+{
+  if (odb::dbStringProperty::create((odb::dbObject*)obj, prop_name.c_str(), value.c_str()) != NULL) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+bool set_bool_prop(void* obj, const std::string prop_name, const bool value)
+{
+  if (odb::dbBoolProperty::create((odb::dbObject*)obj, prop_name.c_str(), value) != NULL) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+bool set_int_prop(void* obj, const std::string prop_name, const int value)
+{
+  if (odb::dbIntProperty::create((odb::dbObject*)obj, prop_name.c_str(), value) != NULL) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+bool set_double_prop(void* obj, const std::string prop_name, const double value)
+{
+  if (odb::dbDoubleProperty::create((odb::dbObject*)obj, prop_name.c_str(), value) != NULL) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+std::string get_str_prop(void* obj, const std::string prop_name)
+{
+  auto prop = odb::dbStringProperty::find((odb::dbObject*)obj, prop_name.c_str());
+  if (prop != NULL) {
+    return prop->getValue();
+  } else {
+    printf("No Property %s exists\n", prop_name.c_str());
+    return "";
+  }
+}
+bool get_bool_prop(void* obj, const std::string prop_name)
+{
+  auto prop = odb::dbBoolProperty::find((odb::dbObject*)obj, prop_name.c_str());
+  if (prop != NULL) {
+    return prop->getValue();
+  } else {
+    printf("No Property %s exists\n", prop_name.c_str());
+    return 0;
+  }
+}
+int get_int_prop(void* obj, const std::string prop_name)
+{
+  auto prop = odb::dbIntProperty::find((odb::dbObject*)obj, prop_name.c_str());
+  if (prop != NULL) {
+    return prop->getValue();
+  } else {
+    printf("No Property %s exists\n", prop_name.c_str());
+    return 0;
+  }
+}
+double get_double_prop(void* obj, const std::string prop_name)
+{
+  auto prop = odb::dbDoubleProperty::find((odb::dbObject*)obj, prop_name.c_str());
+  if (prop != NULL) {
+    return prop->getValue();
+  } else {
+    printf("No Property %s exists\n", prop_name.c_str());
+    return 0;
+  }
+}
+void remove_prop(void* obj, const std::string prop_name)
+{
+  odb::dbProperty* prop = odb::dbProperty::find((odb::dbObject*)obj, prop_name.c_str());
+  if (prop != NULL) {
+    odb::dbProperty::destroy(prop);
+  }
+}
+odb::dbSet<odb::dbProperty> get_properties(void* object);
+
 %}
 
 odb::dbLib*
@@ -106,3 +187,13 @@ odb::dbDatabase* read_db(odb::dbDatabase* db, const char* db_path);
 int write_db(odb::dbDatabase* db, const char* db_path);
 int *new_int(int ivalue);
 int get_int(int *i);
+void remove_prop(void* obj, const std::string prop_name);
+
+std::string get_str_prop(void* obj, const std::string prop_name);
+bool set_str_prop(void* obj, const std::string prop_name, const std::string value);
+bool get_bool_prop(void* obj, const std::string prop_name);
+bool set_bool_prop(void* obj, const std::string prop_name, const bool value);
+int get_int_prop(void* obj, const std::string prop_name);
+bool set_int_prop(void* obj, const std::string prop_name, const int value);
+double get_double_prop(void* obj, const std::string prop_name);
+bool set_double_prop(void* obj, const std::string prop_name, const double value);
