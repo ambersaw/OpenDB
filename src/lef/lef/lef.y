@@ -344,7 +344,7 @@ lef_file: rules extension_opt  end_library
         if (!lefData->hasVer) {
               char temp[300];
               sprintf(temp, "No VERSION statement found, using the default value %2g.", lefData->versionNum);
-              lefWarning(2001, temp);            
+              //lefWarning(2001, temp);            
         }        
         //only pre 5.6, 5.6 it is obsolete
         if (!lefData->hasNameCase && lefData->versionNum < 5.6)

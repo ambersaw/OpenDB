@@ -1862,12 +1862,12 @@ bool lefin::readLef(const char* lef_file)
   bool r = lefin_parse(this, lef_file);
 
   if (_layer_cnt)
-    notice(0, "    Created %d technology layers\n", _layer_cnt);
+    notice(0, "Created %d technology layers\n", _layer_cnt);
 
   if (_via_cnt)
-    notice(0, "    Created %d technology vias\n", _via_cnt);
+    notice(0, "Created %d technology vias\n", _via_cnt);
   if (_master_cnt)
-    notice(0, "    Created %d library cells\n", _master_cnt);
+    notice(0, "Created %d library cells\n", _master_cnt);
 
   notice(0, "Finished LEF file:  %s\n", lef_file);
 
@@ -2020,13 +2020,13 @@ dbLib* lefin::createTechAndLib(const char*             lib_name,
   }
 
   if (_layer_cnt)
-    notice(0, "    Created %d technology layers\n", _layer_cnt);
+    notice(0, "Created %d technology layers\n", _layer_cnt);
 
   if (_via_cnt)
-    notice(0, "    Created %d technology vias\n", _via_cnt);
+    notice(0, "Created %d technology vias\n", _via_cnt);
 
   if (_master_cnt)
-    notice(0, "    Created %d library cells\n", _master_cnt);
+    notice(0, "Created %d library cells\n", _master_cnt);
 
   if (_errors != 0) {
     if (_lib)

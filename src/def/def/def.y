@@ -318,7 +318,7 @@ end_design: K_END K_DESIGN
             if (!defData->hasVer) {
               char temp[300];
               sprintf(temp, "No VERSION statement found, using the default value %2g.", defData->VersionNum);
-              defData->defWarning(7012, temp);            
+              //defData->defWarning(7012, temp);            
             }
             if (!defData->hasNameCase && defData->VersionNum < 5.6)
               defData->defWarning(7013, "The DEF file is invalid if NAMESCASESENSITIVE is undefined.\nNAMESCASESENSITIVE is a mandatory statement in the DEF file with version 5.6 and earlier.\nTo define the NAMESCASESENSITIVE statement, refer to the LEF/DEF 5.5 and earlier Language Reference manual.");
