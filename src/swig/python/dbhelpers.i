@@ -18,7 +18,7 @@ read_lef(odb::dbDatabase* db, const char* path)
   }
 }
 
-odb::dbChip*
+odb::dbBlock*
 read_def(odb::dbDatabase* db, std::string path)
 {
   std::vector<odb::dbLib *> libs;
@@ -174,7 +174,7 @@ odb::dbSet<odb::dbProperty> get_properties(void* object);
 
 odb::dbLib*
 read_lef(odb::dbDatabase* db, const char* path);
-odb::dbChip*
+odb::dbBlock*
 read_def(odb::dbDatabase* db, std::string path);
 
 int

@@ -1297,8 +1297,10 @@ dbInst* dbInst::create(dbBlock*    block_,
     ZASSERT(inst_hdr);
   }
 
-  if (block->_inst_hash.hasMember(name_))
-    return NULL;
+  if (block->_inst_hash.hasMember(name_)) {
+    // return NULL;
+    return (dbInst *)block->_inst_hash.find(name_);
+  }
 
   if (block->_journal) {
     debug("DB_ECO", "A", "ECO: dbInst:create\n");

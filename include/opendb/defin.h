@@ -73,7 +73,7 @@ class defin
   void useBlockName(const char* name);
 
   /// Create a new chip
-  dbChip* createChip(std::vector<dbLib*>& search_libs, const char* def_file);
+  dbBlock* createChip(std::vector<dbLib*>& search_libs, const char* def_file);
 
   /// Create a new hierachical block
   dbBlock* createBlock(dbBlock*             parent,

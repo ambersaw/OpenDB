@@ -227,7 +227,7 @@ class definReader : public definBase
   void namesAreDBIDs();
   void setAssemblyMode();
 
-  dbChip*  createChip(std::vector<dbLib*>& search_libs, const char* def_file);
+  dbBlock*  createChip(std::vector<dbLib*>& search_libs, const char* def_file);
   dbBlock* createBlock(dbBlock*             parent,
                        std::vector<dbLib*>& search_libs,
                        const char*          def_file);

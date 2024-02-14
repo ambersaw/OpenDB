@@ -96,7 +96,7 @@ void defin::useBlockName(const char* name)
   _reader->useBlockName(name);
 }
 
-dbChip* defin::createChip(std::vector<dbLib*>& libs, const char* def_file)
+dbBlock* defin::createChip(std::vector<dbLib*>& libs, const char* def_file)
 {
   if (libs.size() == 0)
     return NULL;

@@ -145,8 +145,7 @@ readMasters(utl::Logger* logger, dbBlock* block, const char* fileName)
           break;
         }
         if (mtermMap.find(master) != mtermMap.end()) {
-          logger->warn(utl::ODB,
-                       285,
+          logger->warn(utl::ODB, 285,
                        "Master {} seen more than once in {}.",
                        token,
                        fileName);
@@ -156,8 +155,7 @@ readMasters(utl::Logger* logger, dbBlock* block, const char* fileName)
       } else {
         dbMTerm* mterm = master->findMTerm(token.c_str());
         if (!mterm) {
-          logger->warn(utl::ODB,
-                       286,
+          logger->warn(utl::ODB, 286,
                        "Terminal {} of CDL master {} not found in LEF.",
                        token,
                        master->getName());
@@ -211,14 +209,12 @@ bool cdl::writeCdl(utl::Logger* logger,
     auto it = mtermMap.find(master);
     if (it == mtermMap.end()) {
       if (master->getMTermCount() == 0) {
-        logger->warn(utl::ODB,
-                     357,
+        logger->warn(utl::ODB, 357,
                      "Master {} was not in the masters CDL files, but master "
                      "has no pins.",
                      master->getName());
       } else {
-        logger->error(utl::ODB,
-                      287,
+        logger->error(utl::ODB, 287,
                       "Master {} was not in the masters CDL files.",
                       master->getName());
       }

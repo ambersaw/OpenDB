@@ -1555,7 +1555,7 @@ DefHeader* DefHeader::getDefHeader(const char* file)
   return hdr;
 }
 
-dbChip* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
+dbBlock* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
 {
   init();
   setLibs(libs);
@@ -1584,14 +1584,14 @@ dbChip* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
   assert(chip);
 
   const char *block_name;
-  if (_block_name)
-    block_name = _block_name;
-  else
+  if (hdr->_design)
     block_name = hdr->_design;
+  else
+    block_name = _block_name;
 
   _block = chip->getBlockByName(block_name);
   if (_block) {
-    return NULL;
+    // return NULL;
   } else {
     _block = dbBlock::create(chip, block_name, nullptr, hdr->_hier_delimeter);
   }
@@ -1602,7 +1602,7 @@ dbChip* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
 
   _block->setBusDelimeters(hdr->_left_bus_delimeter, hdr->_right_bus_delimeter);
 
-  notice(0, "\nReading DEF file: %s\n", file);
+  notice(0, "Reading DEF file: %s\n", file);
   notice(0, "Design: %s\n", hdr->_design);
 
   if (!createBlock(file)) {
@@ -1635,7 +1635,7 @@ dbChip* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
 
   notice(0, "Finished DEF file: %s\n", file);
   delete hdr;
-  return chip;
+  return _block;
 }
 
 static std::string renameBlock(dbBlock* parent, const char* old_name)
@@ -1774,9 +1774,10 @@ bool definReader::createBlock(const char* file)
 
   defrInitSession();
 
-  defrSetPropCbk(propCallback);
-  defrSetPropDefEndCbk(propEndCallback);
-  defrSetPropDefStartCbk(propStartCallback);
+  // FIXME A7EN: when read def twice, if enable PropCbk, it will stuck! Diable them for now
+  // defrSetPropCbk(propCallback);
+  // defrSetPropDefEndCbk(propEndCallback);
+  // defrSetPropDefStartCbk(propStartCallback);
   defrSetBlockageCbk(blockageCallback);
   defrSetComponentCbk(componentsCallback);
   defrSetComponentMaskShiftLayerCbk(componentMaskShiftCallback);
@@ -1789,13 +1790,13 @@ bool definReader::createBlock(const char* file)
   defrSetGroupMemberCbk(groupMemberCallback);
   defrSetGroupNameCbk(groupNameCallback);
   defrSetHistoryCbk(historyCallback);
-  defrSetNetCbk(netCallback);
+  // defrSetNetCbk(netCallback);
   defrSetNonDefaultCbk(nonDefaultRuleCallback);
   defrSetPinCbk(pinCallback);
   defrSetPinEndCbk(pinsEndCallback);
   defrSetPinPropCbk(pinPropCallback);
   defrSetRegionCbk(regionCallback);
-  defrSetRowCbk(rowCallback);
+  // defrSetRowCbk(rowCallback);
   defrSetScanchainsStartCbk(scanchainsCallback);
   defrSetSlotStartCbk(slotsCallback);
   defrSetSNetCbk(specialNetCallback);
@@ -1804,7 +1805,7 @@ bool definReader::createBlock(const char* file)
   defrSetTechnologyCbk(technologyCallback);
   defrSetTrackCbk(trackCallback);
   defrSetUnitsCbk(unitsCallback);
-  defrSetViaCbk(viaCallback);
+  // defrSetViaCbk(viaCallback);
 
   defrSetAddPathToNet();
 

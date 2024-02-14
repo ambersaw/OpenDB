@@ -80,7 +80,7 @@ void definNonDefaultRule::via(const char* name)
   dbTechVia* via = _tech->findVia(name);
 
   if (via == NULL) {
-    notice(0, "error: Cannot find tech-via %s\n", name);
+    // notice(0, "error: Cannot find tech-via %s\n", name);
     ++_errors;
     return;
   }
@@ -96,7 +96,7 @@ void definNonDefaultRule::viaRule(const char* name)
   dbTechViaGenerateRule* rule = _tech->findViaGenerateRule(name);
 
   if (rule == NULL) {
-    notice(0, "error: Cannot find tech-via-genreate rule %s\n", name);
+    // notice(0, "error: Cannot find tech-via-genreate rule %s\n", name);
     ++_errors;
     return;
   }

@@ -154,10 +154,11 @@ void definComponent::begin(const char* iname, const char* mname)
     return;
   }
 
+  // If inst already existed, return existing one
   _cur_inst = dbInst::create(_block, master, iname);
 
   if (_cur_inst == NULL) {
-    notice(0, "error: duplicate instance definition(%s)\n", iname);
+    // notice(0, "error: duplicate instance definition(%s)\n", iname);
     _errors++;
     return;
   }

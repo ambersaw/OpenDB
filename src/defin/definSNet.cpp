@@ -287,7 +287,7 @@ void definSNet::wire(dbWireType type, const char* shield)
     _shield_net = _block->findNet(shield);
 
     if (_shield_net == NULL) {
-      notice(0, "error: SHIELD net (%s) does not exists.\n", shield);
+      // notice(0, "error: SHIELD net (%s) does not exists.\n", shield);
       _wire_type = dbWireType::NONE;
       ++_errors;
     }
