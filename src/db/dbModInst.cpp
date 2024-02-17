@@ -213,7 +213,15 @@ dbModInst* dbModInst::create(dbModule*   parentModule, // Parent Module
 {
   _dbModule*  parent = (_dbModule*) parentModule;
   _dbBlock*   block  = (_dbBlock*) parent->getOwner();
-  std::string h_name = std::string(parent->_name) + '/' + std::string(name);
+  dbBlock* block_ = (dbBlock *)block;
+
+  // std::string h_name = std::string(parent->_name) + '/' + std::string(name);
+  std::string h_name = "";
+  if (parentModule == block_->getTopModule())
+    h_name = name;
+  else
+    h_name = parentModule->getModInst()->getHierarchicalName() + "/" + name;
+
   if (block->_modinst_hash.hasMember(h_name.c_str()))
     return nullptr;
   _dbModule* master = (_dbModule*) masterModule;
