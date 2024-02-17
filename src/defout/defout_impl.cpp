@@ -184,8 +184,23 @@ bool defout_impl::writeBlock(dbBlock* block, const char* def_file)
   int x2 = defdist(r.xMax());
   int y2 = defdist(r.yMax());
 
-  if ((x1 != 0) || (y1 != 0) || (x2 != 0) || (y2 != 0))
-    fprintf(_out, "DIEAREA ( %d %d ) ( %d %d ) ;\n", x1, y1, x2, y2);
+  Poly poly;
+  block->getDieBoundary(poly);
+
+  std::vector<Point> points = poly.getPoints();
+
+  if (points.size() > 0) {
+    fprintf(_out, "DIEAREA ");
+    for (auto &p : points) {
+      int x = p.getX();
+      int y = p.getY();
+      fprintf(_out, " ( %d %d )", x, y);
+    }
+    fprintf(_out, " ;\n");
+  } else {
+    if ((x1 != 0) || (y1 != 0) || (x2 != 0) || (y2 != 0))
+      fprintf(_out, "DIEAREA ( %d %d ) ( %d %d ) ;\n", x1, y1, x2, y2);
+  }
 
   writeRows(block);
   writeTracks(block);

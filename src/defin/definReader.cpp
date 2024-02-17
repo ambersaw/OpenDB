@@ -1785,21 +1785,21 @@ bool definReader::createBlock(const char* file)
   defrSetExtensionCbk(extensionCallback);
   defrSetFillStartCbk(fillsCallback);
   defrSetFillCbk(fillCallback);
-  defrSetGcellGridCbk(gcellGridCallback);
-  defrSetGroupCbk(groupCallback);
-  defrSetGroupMemberCbk(groupMemberCallback);
-  defrSetGroupNameCbk(groupNameCallback);
-  defrSetHistoryCbk(historyCallback);
+  // defrSetGcellGridCbk(gcellGridCallback);
+  // defrSetGroupCbk(groupCallback);
+  // defrSetGroupMemberCbk(groupMemberCallback);
+  // defrSetGroupNameCbk(groupNameCallback);
+  // defrSetHistoryCbk(historyCallback);
   // defrSetNetCbk(netCallback);
   defrSetNonDefaultCbk(nonDefaultRuleCallback);
   defrSetPinCbk(pinCallback);
   defrSetPinEndCbk(pinsEndCallback);
   defrSetPinPropCbk(pinPropCallback);
-  defrSetRegionCbk(regionCallback);
+  // defrSetRegionCbk(regionCallback);
   // defrSetRowCbk(rowCallback);
   defrSetScanchainsStartCbk(scanchainsCallback);
   defrSetSlotStartCbk(slotsCallback);
-  defrSetSNetCbk(specialNetCallback);
+  // defrSetSNetCbk(specialNetCallback);
   defrSetStartPinsCbk(pinsStartCallback);
   defrSetStylesStartCbk(stylesCallback);
   defrSetTechnologyCbk(technologyCallback);
@@ -1839,8 +1839,8 @@ bool definReader::replaceWires(const char* file)
 
   defrInitSession();
 
-  defrSetNetCbk(netCallback);
-  defrSetSNetCbk(specialNetCallback);
+  // defrSetNetCbk(netCallback);
+  // defrSetSNetCbk(specialNetCallback);
 
   defrSetAddPathToNet();
 

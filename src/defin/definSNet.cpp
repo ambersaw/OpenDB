@@ -427,7 +427,7 @@ void definSNet::pathVia(const char* via_name)
     dbVia* via = _block->findVia(via_name);
 
     if (via == NULL) {
-      notice(0, "error: undefined ia (%s) referenced\n", via_name);
+      notice(0, "error: undefined via (%s) referenced\n", via_name);
       ++_errors;
       return;
     }
@@ -481,7 +481,7 @@ void definSNet::pathViaArray(const char* via_name,
     dbVia* via = _block->findVia(via_name);
 
     if (via == NULL) {
-      notice(0, "error: undefined ia (%s) referenced\n", via_name);
+      notice(0, "error: undefined via (%s) referenced\n", via_name);
       ++_errors;
       return;
     }
