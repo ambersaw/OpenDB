@@ -1956,10 +1956,10 @@ void dbBlock::getMasters(std::vector<dbMaster*>& masters)
     masters.push_back(hdr->getMaster());
   }
 }
-void dbBlock::setDieBoundary(const Poly& r)
+void dbBlock::setDieBoundary(const Poly& poly_)
 {
   _dbBlock* block  = (_dbBlock*) this;
-  block->_die_boundary = r;
+  block->_die_boundary = poly_;
 }
 
 void dbBlock::getDieBoundary(Poly& r)
@@ -1968,10 +1968,10 @@ void dbBlock::getDieBoundary(Poly& r)
   r               = block->_die_boundary;
 }
 
-void dbBlock::setDieArea(const Rect& r)
+void dbBlock::setDieArea(const Rect& rect_)
 {
   _dbBlock* block  = (_dbBlock*) this;
-  block->_die_area = r;
+  block->_die_area = rect_;
 }
 
 void dbBlock::getDieArea(Rect& r)
