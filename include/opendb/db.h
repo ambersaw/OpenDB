@@ -2698,6 +2698,11 @@ class dbInst : public dbObject
   const char* getConstName();
 
   ///
+  /// Get instance leaf name if it is in hier inst
+  ///
+  const char* getLeafName();
+
+  ///
   /// Compare, like !strcmp
   ///
   bool isNamed(const char* name);

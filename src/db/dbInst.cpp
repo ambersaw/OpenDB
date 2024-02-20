@@ -423,6 +423,16 @@ const char* dbInst::getConstName()
   return inst->_name;
 }
 
+const char* dbInst::getLeafName()
+{
+  const char* full_name = this->getConstName();
+  dbModule *module = this->getModule();
+  dbModInst *modinst = module->getModInst();
+  const char *modinst_name = modinst->getHierarchicalName().c_str();
+  int prefix_len = strlen(modinst_name);
+  return full_name + prefix_len + 1;
+}
+
 bool dbInst::isNamed(const char* name)
 {
   _dbInst* inst = (_dbInst*) this;
