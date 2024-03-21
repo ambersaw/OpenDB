@@ -88,7 +88,7 @@ class dbTransform
   void apply(Point& p) const;
 
   // Apply transform to this point
-  void apply(Rect& r) const;
+  void apply(Rect& r_) const;
 
   // Post multiply transform.
   void concat(const dbTransform& t);

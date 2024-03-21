@@ -241,13 +241,13 @@ void dbTransform::apply(Point& p) const
   p.y() += _offset.y();
 }
 
-void dbTransform::apply(Rect& r) const
+void dbTransform::apply(Rect& r_) const
 {
-  Point ll = r.ll();
-  Point ur = r.ur();
+  Point ll = r_.ll();
+  Point ur = r_.ur();
   apply(ll);
   apply(ur);
-  r.init(ll.x(), ll.y(), ur.x(), ur.y());
+  r_.init(ll.x(), ll.y(), ur.x(), ur.y());
 }
 
 void dbTransform::concat(const dbTransform& t, dbTransform& result)
