@@ -546,6 +546,7 @@ class dbBox : public dbObject
   /// Get GeomShape Interface
   ///
   GeomShape* getGeomShape();
+  Rect* getShapeRect();
 
   ///
   /// Set temporary flag visited

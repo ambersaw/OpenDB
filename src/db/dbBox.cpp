@@ -455,6 +455,12 @@ GeomShape* dbBox::getGeomShape()
   return (GeomShape*) &box->_shape;
 }
 
+Rect* dbBox::getShapeRect()
+{
+  _dbBox* box = (_dbBox*) this;
+  return &(box->_shape._rect);
+}
+
 int dbBox::xMin()
 {
   return getGeomShape()->xMin();
