@@ -127,7 +127,7 @@ std::string get_str_prop(void* obj, const std::string prop_name)
   if (prop != NULL) {
     return prop->getValue();
   } else {
-    printf("No Property %s exists\n", prop_name.c_str());
+    // printf("No Property %s exists\n", prop_name.c_str());
     return "";
   }
 }
@@ -137,7 +137,7 @@ bool get_bool_prop(void* obj, const std::string prop_name)
   if (prop != NULL) {
     return prop->getValue();
   } else {
-    printf("No Property %s exists\n", prop_name.c_str());
+    // printf("No Property %s exists\n", prop_name.c_str());
     return 0;
   }
 }
@@ -147,7 +147,7 @@ int get_int_prop(void* obj, const std::string prop_name)
   if (prop != NULL) {
     return prop->getValue();
   } else {
-    printf("No Property %s exists\n", prop_name.c_str());
+    // printf("No Property %s exists\n", prop_name.c_str());
     return 0;
   }
 }
@@ -157,7 +157,7 @@ double get_double_prop(void* obj, const std::string prop_name)
   if (prop != NULL) {
     return prop->getValue();
   } else {
-    printf("No Property %s exists\n", prop_name.c_str());
+    // printf("No Property %s exists\n", prop_name.c_str());
     return 0;
   }
 }
