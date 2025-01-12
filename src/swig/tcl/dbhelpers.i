@@ -17,10 +17,15 @@
 #include <fstream>
 
 odb::dbLib*
-read_lef(odb::dbDatabase* db, const char* path)
+read_lef(odb::dbDatabase* db, const char* path, const char* name)
 {
   lefin lefParser(db, false);
-  const char *libname = basename(const_cast<char*>(path));
+  const char *libname;
+  if (name) {
+    libname = name;
+  } else {
+    libname = basename(const_cast<char*>(path));
+  }
   if (!db->getTech()) {
     return lefParser.createTechAndLib(libname, path);
   } else {
@@ -104,7 +109,7 @@ write_db(odb::dbDatabase* db, const char* db_path)
 %}
 
 odb::dbLib*
-read_lef(odb::dbDatabase* db, const char* path);
+read_lef(odb::dbDatabase* db, const char* path, const char* name);
 
 odb::dbBlock*
 read_def(odb::dbDatabase* db, std::string path);
