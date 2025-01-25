@@ -74,6 +74,10 @@ class definReader : public definBase
   bool                    _update;
   bool                    _continue_on_errors;
   const char*             _block_name;
+  std::string             version_;
+  char                    hier_delimeter_;
+  char                    left_bus_delimeter_;
+  char                    right_bus_delimeter_;
 
   void init();
   void setLibs(std::vector<dbLib*>& lib_names);
@@ -90,6 +94,18 @@ class definReader : public definBase
   int  errors();
 
   // Parser callbacks
+  static int versionCallback(defrCallbackType_e type,
+                             const char* value,
+                             defiUserData data);
+  static int divideCharCallback(defrCallbackType_e,
+                                const char* value,
+                                defiUserData data);
+  static int busBitCallback(defrCallbackType_e type,
+                            const char* value,
+                            defiUserData data);
+  static int designCallback(defrCallbackType_e type,
+                            const char* design,
+                            defiUserData data);
   static int blockageCallback(defrCallbackType_e type,
                               defiBlockage*      blockage,
                               defiUserData       data);

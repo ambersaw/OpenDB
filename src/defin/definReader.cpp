@@ -53,6 +53,7 @@
 #include "definSNet.h"
 #include "definTracks.h"
 #include "definVia.h"
+#include "defzlib.hpp"
 
 /*
 #define UNSUPPORTED(msg)              \
@@ -104,6 +105,9 @@ definReader::definReader(dbDatabase* db)
   _db                 = db;
   _block_name         = NULL;
   _continue_on_errors = false;
+  hier_delimeter_     = 0;
+  left_bus_delimeter_ = 0;
+  right_bus_delimeter_ = 0;
 
   _blockageR         = new definBlockage;
   _componentR        = new definComponent;
@@ -275,6 +279,76 @@ static void handle_props(DEF_TYPE* def_obj, CALLBACK* callback)
   }
 }
 
+int definReader::versionCallback(
+    defrCallbackType_e type /* unused: type */,
+    const char* value,
+    defiUserData data)
+{
+  definReader* reader = (definReader*) data;
+  reader->version_ = value;
+  return PARSE_OK;
+}
+
+int definReader::divideCharCallback(
+    defrCallbackType_e /* unused: type */,
+    const char* value,
+    defiUserData data)
+{
+  definReader* reader = (definReader*) data;
+  reader->hier_delimeter_ = value[0];
+  if (reader->hier_delimeter_ == 0) {
+    reader->error("Syntax error in DIVIDERCHAR statment");
+    return PARSE_ERROR;
+  }
+  return PARSE_OK;
+}
+
+int definReader::busBitCallback(
+    defrCallbackType_e type /* unused: type */,
+    const char* value,
+    defiUserData data)
+{
+  definReader* reader = (definReader*) data;
+  reader->left_bus_delimeter_ = value[0];
+  reader->right_bus_delimeter_ = value[1];
+  if ((reader->left_bus_delimeter_ == 0)
+      || (reader->right_bus_delimeter_ == 0)) {
+    printf("ERROR: Syntax error in BUSBITCHARS statment\n");
+    return PARSE_ERROR;
+  }
+  return PARSE_OK;
+}
+
+int definReader::designCallback(
+    defrCallbackType_e /* unused: type */,
+    const char* design,
+    defiUserData data)
+{
+  definReader* reader = (definReader*) data;
+  const char* block_name;
+  dbChip* chip = reader->_db->getChip();
+  if (chip == nullptr) {
+    chip = dbChip::create(reader->_db);
+  }
+
+  if (reader->_block_name) {
+    block_name = reader->_block_name;
+  } else {
+    block_name = design;
+  }
+
+  dbBlock *_block = chip->getBlockByName(block_name);
+  if (_block) {
+    // return NULL;
+  } else {
+    _block = dbBlock::create(chip, block_name, nullptr, reader->hier_delimeter_);
+  }
+  assert(_block);
+  // reader->_block = _block;
+  reader->setBlock(_block);
+  return PARSE_OK;
+}
+
 int definReader::blockageCallback(defrCallbackType_e /* unused: type */,
                                   defiBlockage* blockage,
                                   defiUserData  data)
@@ -441,9 +515,9 @@ int definReader::dieAreaCallback(defrCallbackType_e /* unused: type */,
       reader->_block->setDieArea(r);
     } else {
       reader->_block->setDieBoundary(P);
-      notice(0,
-             "warning: Polygon DIEAREA statement not supported.  The bounding "
-             "box will be used instead\n");
+      // notice(0,
+      //        "warning: Polygon DIEAREA statement not supported.  The bounding "
+      //        "box will be used instead\n");
       int                          xmin = INT_MAX;
       int                          ymin = INT_MAX;
       int                          xmax = INT_MIN;
@@ -1163,14 +1237,13 @@ int definReader::unitsCallback(defrCallbackType_e, double d, defiUserData data)
             reader->_tech->getDbUnitsPerMicron());
     UNSUPPORTED(buf);
   }
-
+  
   reader->units(d);
 
   std::vector<definBase*>::iterator itr;
   for (itr = reader->_interfaces.begin(); itr != reader->_interfaces.end();
        ++itr)
     (*itr)->units(d);
-
   if (!reader->_update)
     reader->_block->setDefUnits(d);
   return PARSE_OK;
@@ -1560,12 +1633,12 @@ dbBlock* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
   init();
   setLibs(libs);
 
-  DefHeader* hdr = DefHeader::getDefHeader(file);
+  // Modified by A7EN @ 2025/01/25, comment out
+  // DefHeader* hdr = DefHeader::getDefHeader(file);
+  // if (hdr == NULL)
+  //   return NULL;
 
-  if (hdr == NULL)
-    return NULL;
-
-  //// Modified by A7EN @ 2023/09/22, comment out
+  // Modified by A7EN @ 2023/09/22, comment out
   // if (_db->getChip()) {
   //   fprintf(stderr, "Error: Chip already exists\n");
   //   return NULL;
@@ -1582,31 +1655,31 @@ dbBlock* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
     chip = dbChip::create(_db);
   }
   assert(chip);
-
-  const char *block_name;
-  if (hdr->_design)
-    block_name = hdr->_design;
-  else
-    block_name = _block_name;
-
-  _block = chip->getBlockByName(block_name);
-  if (_block) {
-    // return NULL;
-  } else {
-    _block = dbBlock::create(chip, block_name, nullptr, hdr->_hier_delimeter);
-  }
-  
-  assert(_block);
-  setBlock(_block);
   setTech(_db->getTech());
 
-  _block->setBusDelimeters(hdr->_left_bus_delimeter, hdr->_right_bus_delimeter);
+  // This has been moved to designCallback
+  // const char *block_name;
+  // if (hdr->_design)
+  //   block_name = hdr->_design;
+  // else
+  //   block_name = _block_name;
+
+  // _block = chip->getBlockByName(block_name);
+  // if (_block) {
+  //   // return NULL;
+  // } else {
+  //   _block = dbBlock::create(chip, block_name, nullptr, hdr->_hier_delimeter);
+  // }
+  // assert(_block);
+  // setBlock(_block);
+  
+  // _block->setBusDelimeters(hdr->_left_bus_delimeter, hdr->_right_bus_delimeter);
 
   notice(0, "Reading DEF file: %s\n", file);
-  notice(0, "Design: %s\n", hdr->_design);
+  // notice(0, "Design: %s\n", hdr->_design);
 
   if (!createBlock(file)) {
-    delete hdr;
+    // delete hdr;
     dbChip::destroy(chip);
     notice(0, "Error: Failed to read DEF file\n");
     return NULL;
@@ -1634,24 +1707,24 @@ dbBlock* definReader::createChip(std::vector<dbLib*>& libs, const char* file)
            _netR->_net_iterm_cnt);
 
   notice(0, "Finished DEF file: %s\n", file);
-  delete hdr;
+  // delete hdr;
   return _block;
 }
 
-static std::string renameBlock(dbBlock* parent, const char* old_name)
-{
-  int cnt = 1;
+// static std::string renameBlock(dbBlock* parent, const char* old_name)
+// {
+//   int cnt = 1;
 
-  for (;; ++cnt) {
-    char n[16];
-    snprintf(n, 15, "_%d", cnt);
-    std::string name(old_name);
-    name += n;
+//   for (;; ++cnt) {
+//     char n[16];
+//     snprintf(n, 15, "_%d", cnt);
+//     std::string name(old_name);
+//     name += n;
 
-    if (!parent->findChild(name.c_str()))
-      return name;
-  }
-}
+//     if (!parent->findChild(name.c_str()))
+//       return name;
+//   }
+// }
 
 dbBlock* definReader::createBlock(dbBlock*             parent,
                                   std::vector<dbLib*>& libs,
@@ -1660,80 +1733,74 @@ dbBlock* definReader::createBlock(dbBlock*             parent,
   init();
   setLibs(libs);
 
-  DefHeader* hdr = DefHeader::getDefHeader(def_file);
+  // std::string block_name;
 
-  if (hdr == NULL) {
-    fprintf(stderr, "Header information missing from DEF file.\n");
-    return NULL;
-  }
+  // if (_block_name)
+  //   block_name = _block_name;
+  // else
+  //   block_name = hdr->_design;
 
-  std::string block_name;
+  // if (parent->findChild(block_name.c_str())) {
+  //   std::string new_name = renameBlock(parent, block_name.c_str());
+  //   fprintf(stderr,
+  //           "Warning: Block with name \"%s\" already exists, renaming too "
+  //           "\"%s\".\n",
+  //           block_name.c_str(),
+  //           new_name.c_str());
+  //   block_name = new_name;
+  // }
 
-  if (_block_name)
-    block_name = _block_name;
-  else
-    block_name = hdr->_design;
+  // _block = dbBlock::create(parent, block_name.c_str(), nullptr, hdr->_hier_delimeter);
 
-  if (parent->findChild(block_name.c_str())) {
-    std::string new_name = renameBlock(parent, block_name.c_str());
-    fprintf(stderr,
-            "Warning: Block with name \"%s\" already exists, renaming too "
-            "\"%s\".\n",
-            block_name.c_str(),
-            new_name.c_str());
-    block_name = new_name;
-  }
+  // if (_block == NULL) {
+  //   fprintf(stderr,
+  //           "Error: Failed to create Block with name \"%s\".\n",
+  //           block_name.c_str());
+  //   delete hdr;
+  //   return NULL;
+  // }
 
-  _block = dbBlock::create(parent, block_name.c_str(), nullptr, hdr->_hier_delimeter);
+  // setBlock(_block);
+  // setTech(_db->getTech());
 
-  if (_block == NULL) {
-    fprintf(stderr,
-            "Error: Failed to create Block with name \"%s\".\n",
-            block_name.c_str());
-    delete hdr;
-    return NULL;
-  }
+  // _block->setBusDelimeters(hdr->_left_bus_delimeter, hdr->_right_bus_delimeter);
 
-  setBlock(_block);
-  setTech(_db->getTech());
+  // notice(0, "\nReading DEF file: %s\n", def_file);
+  // notice(0, "Design: %s\n", hdr->_design);
 
-  _block->setBusDelimeters(hdr->_left_bus_delimeter, hdr->_right_bus_delimeter);
+  // if (!createBlock(def_file)) {
+  //   dbBlock::destroy(_block);
+  //   notice(0, "Error: Failed to read DEF file\n");
+  //   delete hdr;
+  //   return NULL;
+  // }
 
-  notice(0, "\nReading DEF file: %s\n", def_file);
-  notice(0, "Design: %s\n", hdr->_design);
+  // if (_pinR->_bterm_cnt)
+  //   notice(0, "    Created %d pins.\n", _pinR->_bterm_cnt);
 
-  if (!createBlock(def_file)) {
-    dbBlock::destroy(_block);
-    notice(0, "Error: Failed to read DEF file\n");
-    delete hdr;
-    return NULL;
-  }
+  // if (_componentR->_inst_cnt)
+  //   notice(0,
+  //          "    Created %d components and %d component-terminals.\n",
+  //          _componentR->_inst_cnt,
+  //          _componentR->_iterm_cnt);
 
-  if (_pinR->_bterm_cnt)
-    notice(0, "    Created %d pins.\n", _pinR->_bterm_cnt);
+  // if (_snetR->_snet_cnt)
+  //   notice(0,
+  //          "    Created %d special nets and %d connections.\n",
+  //          _snetR->_snet_cnt,
+  //          _snetR->_snet_iterm_cnt);
 
-  if (_componentR->_inst_cnt)
-    notice(0,
-           "    Created %d components and %d component-terminals.\n",
-           _componentR->_inst_cnt,
-           _componentR->_iterm_cnt);
+  // if (_netR->_net_cnt)
+  //   notice(0,
+  //          "    Created %d nets and %d connections.\n",
+  //          _netR->_net_cnt,
+  //          _netR->_net_iterm_cnt);
 
-  if (_snetR->_snet_cnt)
-    notice(0,
-           "    Created %d special nets and %d connections.\n",
-           _snetR->_snet_cnt,
-           _snetR->_snet_iterm_cnt);
+  // notice(0, "Finished DEF file: %s\n", def_file);
 
-  if (_netR->_net_cnt)
-    notice(0,
-           "    Created %d nets and %d connections.\n",
-           _netR->_net_cnt,
-           _netR->_net_iterm_cnt);
-
-  notice(0, "Finished DEF file: %s\n", def_file);
-
-  delete hdr;
-  return _block;
+  // delete hdr;
+  // return _block;
+  return NULL;
 }
 
 bool definReader::replaceWires(dbBlock* block, const char* def_file)
@@ -1760,20 +1827,22 @@ bool definReader::replaceWires(dbBlock* block, const char* def_file)
   return errors() == 0;
 }
 
+static inline bool hasSuffix(const std::string& str, const std::string& suffix)
+{
+  return str.size() >= suffix.size()
+         && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
 bool definReader::createBlock(const char* file)
 {
-  FILE* f = fopen(file, "r");
-
-  if (f == NULL) {
-    notice(0, "error: Cannot open DEF file %s\n", file);
-    return false;
-  }
-
   defrInit();
   defrReset();
 
   defrInitSession();
-
+  defrSetVersionStrCbk(versionCallback);
+  defrSetBusBitCbk(busBitCallback);
+  defrSetDividerCbk(divideCharCallback);
+  defrSetDesignCbk(designCallback);
   // FIXME A7EN: when read def twice, if enable PropCbk, it will stuck! Diable them for now
   // defrSetPropCbk(propCallback);
   // defrSetPropDefEndCbk(propEndCallback);
@@ -1809,7 +1878,37 @@ bool definReader::createBlock(const char* file)
 
   defrSetAddPathToNet();
 
-  int res = defrRead(f, file, (defiUserData) this, /* case sensitive */ 1);
+  
+  // FILE* f = fopen(file, "r");
+  // if (f == NULL) {
+  //   notice(0, "error: Cannot open DEF file %s\n", file);
+  //   return false;
+  // }
+  // int res = defrRead(f, file, (defiUserData) this, /* case sensitive */ 1);
+
+  // Modified by A7EN @ 2025/01/25 support gzipped def file
+  bool isZipped = hasSuffix(file, ".gz");
+  int res;
+  if (!isZipped) {
+    FILE* f = fopen(file, "r");
+    if (f == nullptr) {
+      notice(0, "ERROR: Cannot open DEF file %s\n", file);
+      return false;
+    }
+    res = defrRead(f, file, (defiUserData) this, /* case sensitive */ 1);
+    fclose(f);
+  } else {
+    defrSetGZipReadFunction();
+    defGZFile f = defrGZipOpen(file, "r");
+    if (f == nullptr) {
+      notice(0, "ERROR: Cannot open zipped DEF file %s\n", file);
+      return false;
+    }
+    res = defrReadGZip(f, file, (defiUserData) this);
+    defGZipClose(f);
+  }
+
+
   if (res != 0 || _errors != 0) {
     notice(0, "DEF parser returns an error!");
     if (!_continue_on_errors) {

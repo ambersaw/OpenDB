@@ -133,11 +133,16 @@ target_include_directories( def
   def
   )
 
-target_include_directories( defzlib
+target_include_directories(defzlib
   PUBLIC
-  def
-  defzlib
-  )
+    def
+    defzlib
+)
+
+target_link_libraries(defzlib
+  PUBLIC
+    ZLIB::ZLIB
+)
 
 add_dependencies( def DefBisonTarget )
 add_dependencies( defzlib def )

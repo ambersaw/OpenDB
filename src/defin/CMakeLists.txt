@@ -32,6 +32,7 @@ target_link_libraries(defin
     PUBLIC
         zutil
         def
+        defzlib
 )
 
 target_compile_features(defin PRIVATE cxx_auto_type)
