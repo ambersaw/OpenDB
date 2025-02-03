@@ -1045,8 +1045,8 @@ void lefin::minFeature(lefiMinFeature* /* unused: min */)
 
 void lefin::nonDefault(lefiNonDefault* rule)
 {
-  if (!_create_tech)
-    return;
+  // if (!_create_tech)
+  //   return;
 
   dbTechNonDefaultRule* dbrule
       = dbTechNonDefaultRule::create(_tech, rule->name());

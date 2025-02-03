@@ -122,6 +122,20 @@ WRAP_OBJECT_RETURN_REF(odb::dbViaParams, params_return)
 %apply std::vector<odb::dbShape> &OUTPUT { std::vector<odb::dbShape> & boxes };
 
 
+%typemap(in, numinputs=0) std::vector<odb::dbTechLayerRule*>& layer_rules {
+  $1 = new std::vector<dbTechLayerRule*>();
+}
+%typemap(argout) std::vector<odb::dbTechLayerRule*>& layer_rules {
+  PyObject* pyList = PyList_New($1->size());
+  for (size_t i = 0; i < $1->size(); ++i) {
+    PyObject* obj = SWIG_NewPointerObj((*$1)[i], SWIGTYPE_p_odb__dbTechLayerRule, 0);
+    PyList_SET_ITEM(pyList, i, obj);
+  }
+  delete $1;
+  $result = pyList;
+}
+
+
 // Wrap containers
 WRAP_DB_CONTAINER(odb::dbProperty)
 WRAP_DB_CONTAINER(odb::dbLib)
